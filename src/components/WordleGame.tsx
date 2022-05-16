@@ -79,16 +79,16 @@ export function WordleGame(params: WordleStateParams) {
       </Center>
       <Box h="12rem">
         {(wordleState.status === "WON" || wordleState.status === "LOST") && (
-          <PostGameButtons onRestartClick={restart} wordleState={wordleState} />
+          <PostGameButtons onRestartPress={restart} wordleState={wordleState} />
         )}
         {(wordleState.status === "GUESSING" ||
           wordleState.status === "REVEALING") && (
           <KeyboardButtons
             submittedGuesses={revealedGuesses}
             solution={wordleState.solution}
-            onLetterClick={addLetterToGuess}
-            onBackspaceClick={removeLastLetterFromGuess}
-            onEnterClick={submitGuess}
+            onLetterPress={addLetterToGuess}
+            onBackspacePress={removeLastLetterFromGuess}
+            onEnterPress={submitGuess}
           />
         )}
       </Box>

@@ -3,12 +3,12 @@ import { WordleState } from "../hooks/useWordleState";
 
 export interface PostGameButtonsProps {
   wordleState: WordleState;
-  onRestartClick: () => void;
+  onRestartPress: () => void;
 }
 
 export function PostGameButtons({
   wordleState: { status, solution },
-  onRestartClick,
+  onRestartPress,
 }: PostGameButtonsProps) {
   return (
     <VStack>
@@ -24,7 +24,7 @@ export function PostGameButtons({
         </Box>
       )}
       <Flex w="100%">
-        <Button flex={1} colorScheme="correct" onClick={onRestartClick}>
+        <Button flex={1} colorScheme="correct" onPress={onRestartPress}>
           Next Word
         </Button>
       </Flex>

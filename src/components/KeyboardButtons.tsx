@@ -10,17 +10,17 @@ import { flatMap } from "lodash";
 import { ComponentProps } from "react";
 
 export interface KeyboardButtonsProps {
-  onLetterClick?: (charCode: number) => void;
-  onEnterClick?: () => void;
-  onBackspaceClick?: () => void;
+  onLetterPress?: (charCode: number) => void;
+  onEnterPress?: () => void;
+  onBackspacePress?: () => void;
   submittedGuesses: string[];
   solution: string;
 }
 
 export function KeyboardButtons({
-  onLetterClick,
-  onEnterClick,
-  onBackspaceClick,
+  onLetterPress,
+  onEnterPress,
+  onBackspacePress,
   submittedGuesses,
   solution,
 }: KeyboardButtonsProps) {
@@ -70,7 +70,7 @@ export function KeyboardButtons({
 
     return {
       letter,
-      onClick: onLetterClick,
+      onPress: onLetterPress,
       colorScheme,
       color: colorScheme === "unusedLetter" ? unusedLetterTextColor : undefined,
     };
@@ -95,7 +95,7 @@ export function KeyboardButtons({
             flex={1.65}
             colorScheme="unusedLetter"
             color={unusedLetterTextColor}
-            onClick={onEnterClick}
+            onPress={onEnterPress}
           >
             ENTER
           </KeyButton>
@@ -106,7 +106,7 @@ export function KeyboardButtons({
             flex={1.65}
             colorScheme="unusedLetter"
             color={unusedLetterTextColor}
-            onClick={onBackspaceClick}
+            onPress={onBackspacePress}
           >
             BACK
           </KeyButton>
@@ -117,7 +117,7 @@ export function KeyboardButtons({
 
 interface LetterButtonProps {
   letter: string;
-  onClick?: (charCode: number) => void;
+  onPress?: (charCode: number) => void;
   colorScheme: string;
   color?: string;
 }
@@ -125,14 +125,14 @@ interface LetterButtonProps {
 /** A letter button on the clickable keyboard. */
 function LetterButton({
   letter,
-  onClick,
+  onPress,
   colorScheme,
   color,
 }: LetterButtonProps) {
   return (
     <KeyButton
       flex={1}
-      onClick={() => onClick?.(letter.charCodeAt(0))}
+      onPress={() => onPress?.(letter.charCodeAt(0))}
       colorScheme={colorScheme}
       color={color}
     >
@@ -151,7 +151,7 @@ function KeyButton(props: ComponentProps<typeof Button>) {
       data-color-scheme={props.colorScheme}
       {...props}
       onPress={(e) => {
-        props.onClick?.(e);
+        props.onPress?.(e);
         // eslint-disable-next-line
         (e.target as any)?.blur();
       }}
