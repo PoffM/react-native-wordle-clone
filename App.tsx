@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Row, Flex, NativeBaseProvider } from "native-base";
+import { PropsWithChildren } from "react";
+import { WordleGame } from "./src/components/WordleGame";
+import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";
 
-export default function App() {
+/** Wrapper with all context providers. */
+export function AppWrapper({ children }: PropsWithChildren<unknown>) {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider>
+      <WordleThemeProvider>{children}</WordleThemeProvider>
+    </NativeBaseProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <AppWrapper>
+      <Flex direction="row" h="100%" justify="center">
+        <WordleGame />
+      </Flex>
+    </AppWrapper>
+  );
+}
