@@ -1,8 +1,4 @@
-import {
-  AspectRatio,
-  Box,
-  useColorModeValue,
-} from "native-base";
+import { AspectRatio, Box, Center, Text, useColorModeValue } from "native-base";
 import { useEffect, useState } from "react";
 
 export interface LetterBoxData {
@@ -75,19 +71,22 @@ export function LetterBox({
 
   return (
     <AspectRatio flex={1} ratio={1}>
-      <Box
+      <Center
         data-testid="letter-box"
         data-background-color={bgColor}
         data-revealed={revealed}
         borderWidth={revealed ? undefined : "2px"}
         borderColor={letter && hasLetterBorderColor}
         bg={bgColor}
-        color={revealed ? "whiteAlpha.900" : textColor}
-        fontWeight="bold"
-        fontSize="2rem"
       >
-        {letter}
-      </Box>
+        <Text
+          fontWeight="bold"
+          fontSize="4xl"
+          color={revealed ? "whiteAlpha.900" : textColor}
+        >
+          {letter}
+        </Text>
+      </Center>
     </AspectRatio>
   );
 }
