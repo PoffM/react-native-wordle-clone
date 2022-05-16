@@ -2,31 +2,24 @@ import {
   Box,
   Button,
   Divider,
-  Flex,
+  IModalProps,
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  ModalProps,
   Text,
-} from "@chakra-ui/react";
+  VStack,
+} from "native-base";
 import { LetterGridRow } from "./letter-grid/LetterGridRow";
 
 export function WordleInfoModal({
   isOpen,
   onClose,
-}: Pick<ModalProps, "isOpen" | "onClose">) {
+}: Pick<IModalProps, "isOpen" | "onClose">) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>How to Play</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Flex direction="column" gap={2}>
+      <Modal.Content>
+        <Modal.Header>How to Play</Modal.Header>
+        <Modal.CloseButton />
+        <Modal.Body>
+          <VStack space={2}>
             <Text>Guess the WORDLE in six tries.</Text>
             <Text>
               Each guess must be a valid five-letter word. Hit the enter button
@@ -37,7 +30,7 @@ export function WordleInfoModal({
               close your guess was to the word.
             </Text>
             <Divider />
-            <Flex direction="column" gap={4}>
+            <VStack space={4}>
               <Text fontWeight="bold">Examples</Text>
               <Box>
                 <Box w="15rem" mb={1}>
@@ -92,13 +85,13 @@ export function WordleInfoModal({
                 </Box>
                 <Text>No letters in the guess are in the word.</Text>
               </Box>
-            </Flex>
-          </Flex>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
-        </ModalFooter>
-      </ModalContent>
+            </VStack>
+          </VStack>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onPress={onClose}>Close</Button>
+        </Modal.Footer>
+      </Modal.Content>
     </Modal>
   );
 }
