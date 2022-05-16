@@ -1,4 +1,4 @@
-import { Row, Flex, NativeBaseProvider } from "native-base";
+import { Flex, NativeBaseProvider } from "native-base";
 import { PropsWithChildren } from "react";
 import { WordleGame } from "./src/components/WordleGame";
 import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";

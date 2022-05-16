@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Factory,
-  HStack,
-  useColorModeValue,
-  VStack,
-} from "native-base";
 import { flatMap } from "lodash";
-import { ComponentProps } from "react";
+import { Box, Button, HStack, useColorModeValue, VStack } from "native-base";
+import { ComponentProps, memo, useCallback } from "react";
 
 export interface KeyboardButtonsProps {
   onLetterPress?: (charCode: number) => void;
@@ -77,41 +70,41 @@ export function KeyboardButtons({
   }
 
   return (
-      <VStack h="100%" space={space} padding={space}>
-        <HStack {...hStackProps}>
-          {"QWERTYUIOP".split("").map((letter) => (
-            <LetterButton {...letterButtonProps(letter)} key={letter} />
-          ))}
-        </HStack>
-        <HStack {...hStackProps}>
-          <Box flex={0.5} />
-          {"ASDFGHJKL".split("").map((letter) => (
-            <LetterButton {...letterButtonProps(letter)} key={letter} />
-          ))}
-          <Box flex={0.5} />
-        </HStack>
-        <HStack {...hStackProps}>
-          <KeyButton
-            flex={1.65}
-            colorScheme="unusedLetter"
-            color={unusedLetterTextColor}
-            onPress={onEnterPress}
-          >
-            ENTER
-          </KeyButton>
-          {"ZXCVBNM".split("").map((letter) => (
-            <LetterButton {...letterButtonProps(letter)} key={letter} />
-          ))}
-          <KeyButton
-            flex={1.65}
-            colorScheme="unusedLetter"
-            color={unusedLetterTextColor}
-            onPress={onBackspacePress}
-          >
-            BACK
-          </KeyButton>
-        </HStack>
-      </VStack>
+    <VStack h="100%" space={space} padding={space}>
+      <HStack {...hStackProps}>
+        {"QWERTYUIOP".split("").map((letter) => (
+          <LetterButton {...letterButtonProps(letter)} key={letter} />
+        ))}
+      </HStack>
+      <HStack {...hStackProps}>
+        <Box flex={0.5} />
+        {"ASDFGHJKL".split("").map((letter) => (
+          <LetterButton {...letterButtonProps(letter)} key={letter} />
+        ))}
+        <Box flex={0.5} />
+      </HStack>
+      <HStack {...hStackProps}>
+        <KeyButton
+          flex={1.65}
+          colorScheme="unusedLetter"
+          color={unusedLetterTextColor}
+          onPress={onEnterPress}
+        >
+          ENTER
+        </KeyButton>
+        {"ZXCVBNM".split("").map((letter) => (
+          <LetterButton {...letterButtonProps(letter)} key={letter} />
+        ))}
+        <KeyButton
+          flex={1.65}
+          colorScheme="unusedLetter"
+          color={unusedLetterTextColor}
+          onPress={onBackspacePress}
+        >
+          BACK
+        </KeyButton>
+      </HStack>
+    </VStack>
   );
 }
 
@@ -125,15 +118,20 @@ interface LetterButtonProps {
 /** A letter button on the clickable keyboard. */
 function LetterButton({
   letter,
-  onPress,
+  onPress: onPressProp,
   colorScheme,
   color,
 }: LetterButtonProps) {
+  const onPress = useCallback(
+    () => onPressProp?.(letter.charCodeAt(0)),
+    [onPressProp, letter]
+  );
+
   return (
     <KeyButton
       flex={1}
-      onPress={() => onPress?.(letter.charCodeAt(0))}
       colorScheme={colorScheme}
+      onPress={onPress}
       color={color}
     >
       {letter}
@@ -142,7 +140,7 @@ function LetterButton({
 }
 
 /** A button on the clickable keyboard. */
-function KeyButton(props: ComponentProps<typeof Button>) {
+const KeyButton = memo((props: ComponentProps<typeof Button>) => {
   return (
     <Button
       height="100%"
@@ -157,4 +155,4 @@ function KeyButton(props: ComponentProps<typeof Button>) {
       }}
     />
   );
-}
+});

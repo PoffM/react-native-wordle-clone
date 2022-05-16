@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import COMMON_WORDS from "../word-list/common-words.json";
 import UNCOMMON_WORDS from "../word-list/uncommon-words.json";
 
@@ -23,7 +23,7 @@ export function useWordleState(params: WordleStateParams = {}) {
     makeInitialState(params.solution)
   );
 
-  function addLetterToGuess(charCode: number) {
+  const addLetterToGuess = useCallback((charCode: number) => {
     setWordleState((state) => {
       const newGuess = (
         state.currentGuess + String.fromCharCode(charCode)
@@ -34,7 +34,7 @@ export function useWordleState(params: WordleStateParams = {}) {
         currentGuess: newGuess,
       };
     });
-  }
+  }, []);
 
   function removeLastLetterFromGuess() {
     setWordleState((state) => ({
