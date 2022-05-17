@@ -47,10 +47,7 @@ export function KeyboardButtons({
       .map((it) => it.letter)
   );
 
-  const unusedLetterTextColor = useColorModeValue(
-    "blackAlpha.900",
-    "whiteAlpha.900"
-  );
+  const unusedLetterTextColor = useColorModeValue("gray.900", "gray.50");
 
   function letterButtonProps(letter: string): LetterButtonProps {
     const colorScheme = correctLetters.has(letter)

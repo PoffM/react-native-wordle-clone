@@ -25,11 +25,13 @@ export function LetterBox({
   onRevealed,
   initiallyRevealed = false,
 }: LetterBoxProps) {
-  const textColor = useColorModeValue(undefined, "whiteAlpha.900");
+  const textColor = useColorModeValue(undefined, "gray.50");
   const hasLetterBorderColor = useColorModeValue(
-    "blackAlpha.600",
-    "whiteAlpha.600"
+    "light.600",
+    "dark.600"
   );
+
+  const noLetterBorderColor = useColorModeValue("gray.400", "gray.600");
 
   const { rotateX, scale } = useSpring({
     from: {
@@ -93,13 +95,13 @@ export function LetterBox({
       <Center
         size="full"
         borderWidth={revealed ? undefined : "2px"}
-        borderColor={letter && hasLetterBorderColor}
+        borderColor={letter ? hasLetterBorderColor : noLetterBorderColor}
         bg={bgColor}
       >
         <Text
           fontWeight="bold"
           fontSize="4xl"
-          color={revealed ? "whiteAlpha.900" : textColor}
+          color={revealed ? "gray.50" : textColor}
         >
           {letter}
         </Text>
