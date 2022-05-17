@@ -5,6 +5,7 @@ import {
   IconButton,
   MoonIcon,
   QuestionOutlineIcon,
+  Row,
   SunIcon,
   useColorMode,
 } from "native-base";
@@ -27,27 +28,27 @@ export function WordleHeader() {
   } mode.`;
 
   return (
-    <Flex alignItems="center" h="3rem" borderBottomWidth="1px" px={3}>
-      <Flex flex={1} align="center">
+    <Row alignItems="center" h="3rem" borderBottomWidth="1px" px={3}>
+      <Row flex={1} alignItems="center">
         <IconButton
           onPress={() => setOpen(true)}
           aria-label={helpLabel}
           title={helpLabel}
           icon={<QuestionOutlineIcon w={6} h={6} />}
         />
-      </Flex>
+      </Row>
       <Box>
         <Heading size="lg">React Wordle Clone</Heading>
       </Box>
-      <Flex flex={1} justify="end">
+      <Row flex={1} justifyContent="end">
         <IconButton
           onPress={toggleColorMode}
           aria-label={colorModeLabel}
           title={colorModeLabel}
           icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
         />
-      </Flex>
+      </Row>
       <WordleInfoModal isOpen={isOpen} onClose={() => setOpen(false)} />
-    </Flex>
+    </Row>
   );
 }
