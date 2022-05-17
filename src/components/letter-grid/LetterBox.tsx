@@ -1,4 +1,5 @@
-import { AspectRatio, Box, Center, Text, useColorModeValue } from "native-base";
+import { animated, useSpring } from "@react-spring/native";
+import { Center, Text, useColorModeValue } from "native-base";
 import { useEffect, useState } from "react";
 
 export interface LetterBoxData {
@@ -9,7 +10,7 @@ export interface LetterBoxData {
 
 export interface LetterBoxProps extends LetterBoxData {
   isSubmitted: boolean;
-  revealDelaySeconds?: number;
+  revealDelayMs?: number;
   onRevealed?: () => void;
   /** Renders the letter box with the solution color already revealed. */
   initiallyRevealed?: boolean;
@@ -20,7 +21,7 @@ export function LetterBox({
   letterIsInRemainingLetters,
   letter,
   isSubmitted,
-  revealDelaySeconds,
+  revealDelayMs,
   onRevealed,
   initiallyRevealed = false,
 }: LetterBoxProps) {
@@ -30,14 +31,27 @@ export function LetterBox({
     "whiteAlpha.600"
   );
 
+  const { rotateX, popInX } = useSpring({
+    from: {
+      rotateX: "0deg",
+      popInX: 0,
+    },
+  });
+
+  const scale = popInX.to({
+    range: [0, 1, 1.4, 2],
+    output: [1, 0.8, 1.1, 1],
+  });
+
   // Pop-in animation when the letter is entered:
   useEffect(() => {
     void (async () => {
       if (letter) {
-        // await animation.start({
-        //   scale: [0.8, 1.1, 1],
-        //   transition: { times: [0, 0.4, 1], duration: 0.1 },
-        // });
+        popInX.start({
+          from: 1,
+          to: 2,
+          config: { duration: 100 },
+        });
       }
     })();
   }, [letter]);
@@ -45,21 +59,20 @@ export function LetterBox({
   // Flip animation to reveal the answer:
   const [revealed, setRevealed] = useState(initiallyRevealed);
   useEffect(() => {
-    void (async () => {
-      if (isSubmitted && !revealed) {
-        // await animation.start({
-        //   rotateX: [0, -90],
-        //   transition: { delay: revealDelaySeconds, duration: 0.2 },
-        // });
-        setRevealed(true);
-        onRevealed?.();
-        // await animation.start({
-        //   rotateX: [-90, 0],
-        //   transition: { duration: 0.2 },
-        // });
-      }
-    })();
-  }, [isSubmitted, revealed, revealDelaySeconds, onRevealed]);
+    if (isSubmitted && !revealed) {
+      void rotateX.start({
+        from: "0deg",
+        to: async (next) => {
+          await next("-90deg");
+          setRevealed(true);
+          onRevealed?.();
+          await next("0deg");
+        },
+        delay: revealDelayMs,
+        config: { duration: 150 },
+      });
+    }
+  }, [isSubmitted, revealed, revealDelayMs, onRevealed]);
 
   const bgColor = revealed
     ? letterIsInRightSpot
@@ -70,11 +83,18 @@ export function LetterBox({
     : undefined;
 
   return (
-    <AspectRatio flex={1} ratio={1}>
+    <animated.View
+      data-testid="letter-box"
+      data-background-color={bgColor}
+      data-revealed={revealed}
+      style={{
+        flex: 1,
+        aspectRatio: 1,
+        transform: [{ rotateX }, {scale}],
+      }}
+    >
       <Center
-        data-testid="letter-box"
-        data-background-color={bgColor}
-        data-revealed={revealed}
+        size="full"
         borderWidth={revealed ? undefined : "2px"}
         borderColor={letter && hasLetterBorderColor}
         bg={bgColor}
@@ -87,6 +107,6 @@ export function LetterBox({
           {letter}
         </Text>
       </Center>
-    </AspectRatio>
+    </animated.View>
   );
 }
