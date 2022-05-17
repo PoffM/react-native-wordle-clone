@@ -20,18 +20,18 @@ export function LetterGridRow({
   initiallyRevealed,
 }: LetterGridRowProps) {
   // Shake horizontally when there is a new error:
-  const { shakeX } = useSpring({ from: { shakeX: 0 } });
-  const translateX = shakeX.to({
-    range: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    output: [0, -2, 2, -4, 4, -4, 2, -2, 0],
-  });
-
+  const { translateX } = useSpring({ from: { translateX: 0 } });
   useEffect(() => {
     if (rowError) {
-      shakeX.start({
+      const shakePath = [0, -2, 2, -4, 4, -4, 2, -2, 0];
+      const duration = 500 / shakePath.length;
+      translateX.start({
         from: 0,
-        to: 8,
-        config: { duration: 500 },
+        to: async (next) => {
+          for (const x of shakePath) {
+            await next(x, { config: { duration } });
+          }
+        },
       });
     }
   }, [rowError]);
