@@ -1,4 +1,4 @@
-import { NativeBaseProvider } from "native-base";
+import { Box, NativeBaseProvider, useColorModeValue } from "native-base";
 import { PropsWithChildren } from "react";
 import { WordleScreen } from "./src/components/WordleScreen";
 import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";
@@ -12,10 +12,21 @@ export function AppWrapper({ children }: PropsWithChildren<unknown>) {
   );
 }
 
+function BackgroundProvider({ children }: PropsWithChildren<{}>) {
+  const bg = useColorModeValue("white", "gray.900");
+  return (
+    <Box size="full" bg={bg}>
+      {children}
+    </Box>
+  );
+}
+
 export default function App() {
   return (
     <AppWrapper>
-      <WordleScreen />
+      <BackgroundProvider>
+        <WordleScreen />
+      </BackgroundProvider>
     </AppWrapper>
   );
 }
