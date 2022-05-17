@@ -31,26 +31,23 @@ export function LetterBox({
     "whiteAlpha.600"
   );
 
-  const { rotateX, popInX } = useSpring({
+  const { rotateX, scale } = useSpring({
     from: {
       rotateX: "0deg",
-      popInX: 0,
+      scale: 1,
     },
-  });
-
-  const scale = popInX.to({
-    range: [0, 1, 1.4, 2],
-    output: [1, 0.8, 1.1, 1],
   });
 
   // Pop-in animation when the letter is entered:
   useEffect(() => {
     void (async () => {
       if (letter) {
-        popInX.start({
+        scale.start({
           from: 1,
-          to: 2,
-          config: { duration: 100 },
+          to: async (next) => {
+            await next({ from: 0.8, to: 1.1, config: { duration: 40 } });
+            await next({ to: 1, config: { duration: 60 } });
+          },
         });
       }
     })();
@@ -90,7 +87,7 @@ export function LetterBox({
       style={{
         flex: 1,
         aspectRatio: 1,
-        transform: [{ rotateX }, {scale}],
+        transform: [{ rotateX }, { scale }],
       }}
     >
       <Center
