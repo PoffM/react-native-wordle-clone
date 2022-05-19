@@ -71,6 +71,8 @@ export function LetterBox({
       : letterIsInRemainingLetters
       ? "misplaced"
       : "usedLetter"
+    : !!letter
+    ? "staged"
     : undefined;
 
   return (
@@ -101,7 +103,7 @@ const LetterBoxView = Factory(Center as any, {
   }),
   variants: {
     staged: (props) => ({
-      borderColor: themeTools.mode("light.600", "dark.600")(props),
+      borderColor: themeTools.mode("gray.500", "gray.300")(props),
     }),
     correct: {
       borderWidth: "0px",
@@ -125,7 +127,7 @@ const LetterBoxText = Factory(Text, {
   },
   variants: {
     revealed: {
-      color: "gray.50",
+      color: "white",
     },
   },
 });
