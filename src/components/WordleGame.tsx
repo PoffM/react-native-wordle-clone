@@ -1,6 +1,6 @@
-import { Alert, Box, Center, Flex, useToast } from "native-base";
 import { get, range } from "lodash";
-import { useEffect } from "react";
+import { Alert, Box, Center, Flex, useToast } from "native-base";
+import { useEffect, useMemo } from "react";
 import { useWordleState, WordleStateParams } from "../hooks/useWordleState";
 import { KeyboardButtons } from "./KeyboardButtons";
 import { LetterGrid } from "./letter-grid/LetterGrid";
@@ -67,10 +67,13 @@ export function WordleGame(params: WordleStateParams) {
   }, []);
 
   // Only reveal the new colors on the keyboard UI after the letter box colors have been revealed:
-  const revealedGuesses =
-    wordleState.status === "REVEALING"
-      ? wordleState.submittedGuesses.slice(0, -1)
-      : wordleState.submittedGuesses;
+  const revealedGuesses = useMemo(
+    () =>
+      wordleState.status === "REVEALING"
+        ? wordleState.submittedGuesses.slice(0, -1)
+        : wordleState.submittedGuesses,
+    [wordleState.status, wordleState.submittedGuesses]
+  );
 
   return (
     <Flex width="100%" maxW="31rem" height="100%" flexDirection="column">

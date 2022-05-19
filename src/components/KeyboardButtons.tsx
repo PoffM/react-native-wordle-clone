@@ -10,104 +10,109 @@ export interface KeyboardButtonsProps {
   solution: string;
 }
 
-export function KeyboardButtons({
-  onLetterPress,
-  onEnterPress,
-  onBackspacePress,
-  submittedGuesses,
-  solution,
-}: KeyboardButtonsProps) {
-  const space = 1.5;
+export const KeyboardButtons = memo(
+  ({
+    onLetterPress,
+    onEnterPress,
+    onBackspacePress,
+    submittedGuesses,
+    solution,
+  }: KeyboardButtonsProps) => {
+    const space = 1.5;
 
-  const hStackProps = {
-    space,
-    width: "100%",
-    flex: 1,
-  };
-
-  const submittedLetters = flatMap(
-    submittedGuesses
-      .map((guess) => guess.split(""))
-      .map((letters) => letters.map((letter, index) => ({ letter, index })))
-  );
-
-  const submittedLettersSet = new Set(submittedLetters.map((it) => it.letter));
-
-  const correctLetters = new Set(
-    submittedLetters
-      .filter(({ letter, index }) => solution[index] === letter)
-      .map((it) => it.letter)
-  );
-
-  const misplacedLetters = new Set(
-    submittedLetters
-      .filter(
-        ({ letter }) => solution.includes(letter) && !correctLetters.has(letter)
-      )
-      .map((it) => it.letter)
-  );
-
-  const unusedLetterTextColor = useColorModeValue("black", "gray.50");
-  const usedLetterTextColor = "gray.50";
-
-  function letterButtonProps(letter: string): LetterButtonProps {
-    const colorScheme = correctLetters.has(letter)
-      ? "correct"
-      : misplacedLetters.has(letter)
-      ? "misplaced"
-      : submittedLettersSet.has(letter)
-      ? "usedLetter"
-      : "unusedLetter";
-
-    return {
-      letter,
-      onPress: onLetterPress,
-      colorScheme,
-      color:
-        colorScheme === "unusedLetter"
-          ? unusedLetterTextColor
-          : usedLetterTextColor,
+    const hStackProps = {
+      space,
+      width: "100%",
+      flex: 1,
     };
-  }
 
-  return (
-    <VStack h="100%" space={space} padding={space}>
-      <HStack {...hStackProps}>
-        {"QWERTYUIOP".split("").map((letter) => (
-          <LetterButton {...letterButtonProps(letter)} key={letter} />
-        ))}
-      </HStack>
-      <HStack {...hStackProps}>
-        <Box flex={0.5} />
-        {"ASDFGHJKL".split("").map((letter) => (
-          <LetterButton {...letterButtonProps(letter)} key={letter} />
-        ))}
-        <Box flex={0.5} />
-      </HStack>
-      <HStack {...hStackProps}>
-        <KeyButton
-          flex={1.65}
-          colorScheme="unusedLetter"
-          color={unusedLetterTextColor}
-          onPress={onEnterPress}
-        >
-          ENTER
-        </KeyButton>
-        {"ZXCVBNM".split("").map((letter) => (
-          <LetterButton {...letterButtonProps(letter)} key={letter} />
-        ))}
-        <KeyButton
-          flex={1.65}
-          colorScheme="unusedLetter"
-          color={unusedLetterTextColor}
-          onPress={onBackspacePress}
-        >
-          BACK
-        </KeyButton>
-      </HStack>
-    </VStack>
-  );
-}
+    const submittedLetters = flatMap(
+      submittedGuesses
+        .map((guess) => guess.split(""))
+        .map((letters) => letters.map((letter, index) => ({ letter, index })))
+    );
+
+    const submittedLettersSet = new Set(
+      submittedLetters.map((it) => it.letter)
+    );
+
+    const correctLetters = new Set(
+      submittedLetters
+        .filter(({ letter, index }) => solution[index] === letter)
+        .map((it) => it.letter)
+    );
+
+    const misplacedLetters = new Set(
+      submittedLetters
+        .filter(
+          ({ letter }) =>
+            solution.includes(letter) && !correctLetters.has(letter)
+        )
+        .map((it) => it.letter)
+    );
+
+    const unusedLetterTextColor = useColorModeValue("black", "gray.50");
+    const usedLetterTextColor = "gray.50";
+
+    function letterButtonProps(letter: string): LetterButtonProps {
+      const colorScheme = correctLetters.has(letter)
+        ? "correct"
+        : misplacedLetters.has(letter)
+        ? "misplaced"
+        : submittedLettersSet.has(letter)
+        ? "usedLetter"
+        : "unusedLetter";
+
+      return {
+        letter,
+        onPress: onLetterPress,
+        colorScheme,
+        color:
+          colorScheme === "unusedLetter"
+            ? unusedLetterTextColor
+            : usedLetterTextColor,
+      };
+    }
+
+    return (
+      <VStack h="100%" space={space} padding={space}>
+        <HStack {...hStackProps}>
+          {"QWERTYUIOP".split("").map((letter) => (
+            <LetterButton {...letterButtonProps(letter)} key={letter} />
+          ))}
+        </HStack>
+        <HStack {...hStackProps}>
+          <Box flex={0.5} />
+          {"ASDFGHJKL".split("").map((letter) => (
+            <LetterButton {...letterButtonProps(letter)} key={letter} />
+          ))}
+          <Box flex={0.5} />
+        </HStack>
+        <HStack {...hStackProps}>
+          <KeyButton
+            flex={1.65}
+            colorScheme="unusedLetter"
+            color={unusedLetterTextColor}
+            onPress={onEnterPress}
+          >
+            ENTER
+          </KeyButton>
+          {"ZXCVBNM".split("").map((letter) => (
+            <LetterButton {...letterButtonProps(letter)} key={letter} />
+          ))}
+          <KeyButton
+            flex={1.65}
+            colorScheme="unusedLetter"
+            color={unusedLetterTextColor}
+            onPress={onBackspacePress}
+          >
+            BACK
+          </KeyButton>
+        </HStack>
+      </VStack>
+    );
+  }
+);
 
 interface LetterButtonProps {
   letter: string;
