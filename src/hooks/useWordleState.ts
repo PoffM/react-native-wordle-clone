@@ -25,6 +25,10 @@ export function useWordleState(params: WordleStateParams = {}) {
 
   const addLetterToGuess = useCallback((charCode: number) => {
     setWordleState((state) => {
+      if (state.status !== "GUESSING") {
+        return state;
+      }
+
       const newGuess = (
         state.currentGuess + String.fromCharCode(charCode)
       ).slice(0, state.wordLength);
@@ -38,17 +42,27 @@ export function useWordleState(params: WordleStateParams = {}) {
 
   const removeLastLetterFromGuess = useCallback(
     () =>
-      setWordleState((state) => ({
-        ...state,
-        currentGuessError: null,
-        currentGuess: state.currentGuess.slice(0, -1),
-      })),
+      setWordleState((state) => {
+        if (state.status !== "GUESSING") {
+          return state;
+        }
+
+        return {
+          ...state,
+          currentGuessError: null,
+          currentGuess: state.currentGuess.slice(0, -1),
+        };
+      }),
     []
   );
 
   const submitGuess = useCallback(
     () =>
       setWordleState((state) => {
+        if (state.status !== "GUESSING") {
+          return state;
+        }
+
         const currentGuessError =
           state.currentGuess.length < state.solution.length
             ? { message: "Not enough letters." }
@@ -80,6 +94,10 @@ export function useWordleState(params: WordleStateParams = {}) {
   const continueGame = useCallback(
     () =>
       setWordleState((state) => {
+        if (state.status !== "REVEALING") {
+          return state;
+        }
+
         const lastGuess = state.submittedGuesses.at(-1);
 
         const newStatus =
@@ -102,14 +120,10 @@ export function useWordleState(params: WordleStateParams = {}) {
   return {
     wordleState,
     restart,
-    ...(wordleState.status === "REVEALING" && {
-      continueGame,
-    }),
-    ...(wordleState.status === "GUESSING" && {
-      addLetterToGuess,
-      removeLastLetterFromGuess,
-      submitGuess,
-    }),
+    continueGame,
+    addLetterToGuess,
+    removeLastLetterFromGuess,
+    submitGuess,
   };
 }
 
