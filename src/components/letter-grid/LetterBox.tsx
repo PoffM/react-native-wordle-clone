@@ -1,6 +1,6 @@
-import { animated, useSpring } from "@react-spring/native";
 import { Center, Factory, Text, themeTools } from "native-base";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Animated } from "react-native";
 
 export interface LetterBoxData {
   letterIsInRightSpot?: boolean;
@@ -25,24 +25,30 @@ export function LetterBox({
   onRevealed,
   initiallyRevealed = false,
 }: LetterBoxProps) {
-  const { rotateX, scale } = useSpring({
-    from: {
-      rotateX: "0deg",
-      scale: 1,
-    },
-  });
+  const scale = useRef(new Animated.Value(1)).current;
+  const rotateX = useRef(new Animated.Value(0)).current;
 
   // Pop-in animation when the letter is entered:
   useEffect(() => {
     void (async () => {
       if (letter) {
-        scale.start({
-          from: 1,
-          to: async (next) => {
-            await next({ from: 0.8, to: 1.1, config: { duration: 40 } });
-            await next({ to: 1, config: { duration: 60 } });
-          },
-        });
+        Animated.sequence([
+          Animated.timing(scale, {
+            useNativeDriver: true,
+            toValue: 0.8,
+            duration: 0,
+          }),
+          Animated.timing(scale, {
+            useNativeDriver: true,
+            toValue: 1.1,
+            duration: 40,
+          }),
+          Animated.timing(scale, {
+            useNativeDriver: true,
+            toValue: 1,
+            duration: 80,
+          }),
+        ]).start();
       }
     })();
   }, [letter]);
@@ -51,16 +57,22 @@ export function LetterBox({
   const [revealed, setRevealed] = useState(initiallyRevealed);
   useEffect(() => {
     if (isSubmitted && !revealed) {
-      void rotateX.start({
-        from: "0deg",
-        to: async (next) => {
-          await next("-90deg");
-          setRevealed(true);
-          onRevealed?.();
-          await next("0deg");
-        },
+      // Flip down:
+      Animated.timing(rotateX, {
+        useNativeDriver: true,
+        toValue: 1,
+        duration: 150,
         delay: revealDelayMs,
-        config: { duration: 150 },
+      }).start(() => {
+        // Change the state to "revealed" when the box is at 90 degrees (which makes it invisible):
+        setRevealed(true);
+        onRevealed?.();
+        // Flip back up:
+        Animated.timing(rotateX, {
+          useNativeDriver: true,
+          toValue: 0,
+          duration: 150,
+        }).start();
       });
     }
   }, [isSubmitted, revealed, revealDelayMs, onRevealed]);
@@ -76,14 +88,22 @@ export function LetterBox({
     : undefined;
 
   return (
-    <animated.View
+    <Animated.View
       data-testid="letter-box"
       data-variant={letterBoxVariant}
       data-revealed={revealed}
       style={{
         flex: 1,
         aspectRatio: 1,
-        transform: [{ rotateX }, { scale }],
+        transform: [
+          { scale },
+          {
+            rotateX: rotateX.interpolate({
+              inputRange: [0, 1],
+              outputRange: ["0deg", "-90deg"],
+            }),
+          },
+        ],
       }}
     >
       <LetterBoxView variant={letterBoxVariant}>
@@ -91,7 +111,7 @@ export function LetterBox({
           {letter}
         </LetterBoxText>
       </LetterBoxView>
-    </animated.View>
+    </Animated.View>
   );
 }
 

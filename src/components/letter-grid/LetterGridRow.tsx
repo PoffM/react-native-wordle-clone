@@ -1,6 +1,6 @@
-import { animated, useSpring } from "@react-spring/native";
 import { HStack } from "native-base";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { Animated } from "react-native";
 import { LetterBox, LetterBoxData } from "./LetterBox";
 
 export interface LetterGridRowProps {
@@ -20,24 +20,26 @@ export function LetterGridRow({
   initiallyRevealed,
 }: LetterGridRowProps) {
   // Shake horizontally when there is a new error:
-  const { translateX } = useSpring({ from: { translateX: 0 } });
+  const translateX = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+
   useEffect(() => {
     if (rowError) {
       const shakePath = [0, -2, 2, -4, 4, -4, 2, -2, 0];
       const duration = 500 / shakePath.length;
-      translateX.start({
-        from: 0,
-        to: async (next) => {
-          for (const x of shakePath) {
-            await next(x, { config: { duration } });
-          }
-        },
-      });
+      Animated.sequence(
+        shakePath.map((x) =>
+          Animated.timing(translateX, {
+            useNativeDriver: true,
+            toValue: x,
+            duration,
+          })
+        )
+      ).start();
     }
   }, [rowError]);
 
   return (
-    <animated.View style={{ transform: [{ translateX }] }}>
+    <Animated.View style={{ transform: [{ translateX }] }}>
       <HStack
         data-testid="letter-grid-row"
         flex={1}
@@ -59,6 +61,6 @@ export function LetterGridRow({
           );
         })}
       </HStack>
-    </animated.View>
+    </Animated.View>
   );
 }
