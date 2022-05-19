@@ -7,6 +7,7 @@ import {
   Row,
   SunIcon,
   useColorMode,
+  useColorModeValue,
 } from "native-base";
 import { useEffect, useState } from "react";
 import { WordleInfoModal } from "./WordleInfoModal";
@@ -14,6 +15,8 @@ import { WordleInfoModal } from "./WordleInfoModal";
 export function WordleHeader() {
   const [isOpen, setOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const buttonColor = useColorModeValue("gray", "dark");
 
   // When the modal closes, blur the info button:
   useEffect(() => {
@@ -30,6 +33,8 @@ export function WordleHeader() {
     <Row alignItems="center" h="3rem" borderBottomWidth="1px" px={3}>
       <Row flex={1} alignItems="center">
         <IconButton
+          variant="subtle"
+          colorScheme={buttonColor}
           onPress={() => setOpen(true)}
           aria-label={helpLabel}
           title={helpLabel}
@@ -41,6 +46,8 @@ export function WordleHeader() {
       </Box>
       <Row flex={1} justifyContent="end">
         <IconButton
+          variant="subtle"
+          colorScheme={buttonColor}
           onPress={toggleColorMode}
           aria-label={colorModeLabel}
           title={colorModeLabel}
