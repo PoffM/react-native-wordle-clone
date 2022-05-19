@@ -3,8 +3,8 @@ import { IColorHues } from "native-base/lib/typescript/theme/base/colors";
 
 /**
  * Shifts the values in a shaded color palette.
- * e.g. calling skewColor(gray, 2) returns a darkened palette.
- * e.g. calling skewColor(gray, -2) returns a lightened palette.
+ * e.g. calling shadeColor(gray, 2) returns a darkened palette.
+ * e.g. calling shadeColor(gray, -2) returns a lightened palette.
  */
 export function shadeColor(
   color: IColorHues,

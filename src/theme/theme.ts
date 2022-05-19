@@ -17,11 +17,16 @@ const gray = {
 /** Overrides the default Chakra theme. */
 export function wordleTheme(colorMode: ColorMode) {
   const overrides: Theme | (Record<string, any> & {}) = {
+    components: {
+      Box: {
+        baseStyle: {
+          borderColor: colorMode === "dark" ? "gray.700" : "gray.200",
+        },
+      },
+    },
     // Color palettes generated with https://smart-swatch.netlify.app .
     colors: {
-      // Override the default blueish gray with a more pure gray color:
       gray,
-
       // Correct green:
       correct: shadeColor(
         {
@@ -56,7 +61,7 @@ export function wordleTheme(colorMode: ColorMode) {
         colorMode === "light" ? -1 : 0
       ),
       // Mid-Gray for unused letters:
-      unusedLetter: shadeColor(gray, colorMode === "light" ? -4 : -1),
+      unusedLetter: shadeColor(gray, colorMode === "light" ? -5 : -4),
       // Dark gray for used letters:
       usedLetter: shadeColor(gray, colorMode === "dark" ? 2 : 0),
     },
