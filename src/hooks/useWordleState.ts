@@ -36,61 +36,68 @@ export function useWordleState(params: WordleStateParams = {}) {
     });
   }, []);
 
-  function removeLastLetterFromGuess() {
-    setWordleState((state) => ({
-      ...state,
-      currentGuessError: null,
-      currentGuess: state.currentGuess.slice(0, -1),
-    }));
-  }
-
-  function submitGuess() {
-    setWordleState((state) => {
-      const currentGuessError =
-        state.currentGuess.length < state.solution.length
-          ? { message: "Not enough letters." }
-          : !VALID_WORDS.includes(state.currentGuess)
-          ? { message: "Word not in word list." }
-          : null;
-
-      if (currentGuessError) {
-        return { ...state, currentGuessError };
-      }
-
-      const newSubmittedGuesses = [
-        ...state.submittedGuesses,
-        state.currentGuess,
-      ];
-
-      const newStatus = "REVEALING";
-
-      return {
+  const removeLastLetterFromGuess = useCallback(
+    () =>
+      setWordleState((state) => ({
         ...state,
-        submittedGuesses: newSubmittedGuesses,
-        currentGuess: "",
-        status: newStatus,
-      };
-    });
-  }
+        currentGuessError: null,
+        currentGuess: state.currentGuess.slice(0, -1),
+      })),
+    []
+  );
 
-  function continueGame() {
-    setWordleState((state) => {
-      const lastGuess = state.submittedGuesses.at(-1);
+  const submitGuess = useCallback(
+    () =>
+      setWordleState((state) => {
+        const currentGuessError =
+          state.currentGuess.length < state.solution.length
+            ? { message: "Not enough letters." }
+            : !VALID_WORDS.includes(state.currentGuess)
+            ? { message: "Word not in word list." }
+            : null;
 
-      const newStatus =
-        lastGuess === state.solution
-          ? "WON"
-          : state.submittedGuesses.length >= state.maxGuesses
-          ? "LOST"
-          : "GUESSING";
+        if (currentGuessError) {
+          return { ...state, currentGuessError };
+        }
 
-      return { ...state, status: newStatus };
-    });
-  }
+        const newSubmittedGuesses = [
+          ...state.submittedGuesses,
+          state.currentGuess,
+        ];
 
-  function restart() {
-    setWordleState(() => makeInitialState());
-  }
+        const newStatus = "REVEALING";
+
+        return {
+          ...state,
+          submittedGuesses: newSubmittedGuesses,
+          currentGuess: "",
+          status: newStatus,
+        };
+      }),
+    []
+  );
+
+  const continueGame = useCallback(
+    () =>
+      setWordleState((state) => {
+        const lastGuess = state.submittedGuesses.at(-1);
+
+        const newStatus =
+          lastGuess === state.solution
+            ? "WON"
+            : state.submittedGuesses.length >= state.maxGuesses
+            ? "LOST"
+            : "GUESSING";
+
+        return { ...state, status: newStatus };
+      }),
+    []
+  );
+
+  const restart = useCallback(
+    () => setWordleState(() => makeInitialState()),
+    []
+  );
 
   return {
     wordleState,
