@@ -47,7 +47,8 @@ export function KeyboardButtons({
       .map((it) => it.letter)
   );
 
-  const unusedLetterTextColor = useColorModeValue("gray.900", "gray.50");
+  const unusedLetterTextColor = useColorModeValue("black", "gray.50");
+  const usedLetterTextColor = "gray.50";
 
   function letterButtonProps(letter: string): LetterButtonProps {
     const colorScheme = correctLetters.has(letter)
@@ -62,7 +63,10 @@ export function KeyboardButtons({
       letter,
       onPress: onLetterPress,
       colorScheme,
-      color: colorScheme === "unusedLetter" ? unusedLetterTextColor : undefined,
+      color:
+        colorScheme === "unusedLetter"
+          ? unusedLetterTextColor
+          : usedLetterTextColor,
     };
   }
 
@@ -138,13 +142,33 @@ function LetterButton({
 
 /** A button on the clickable keyboard. */
 const KeyButton = memo((props: ComponentProps<typeof Button>) => {
+  // Override the button colorScheme because native-base's default is too dark:
+  const bgColor =
+    props.colorScheme === "unusedLetter"
+      ? "unusedLetter.600"
+      : `${props.colorScheme}.500`;
+  const hoverBgColor = bgColor.replace(/\d*$/, (num) =>
+    String(Number(num) + 100)
+  );
+  const pressedBgColor = bgColor.replace(/\d*$/, (num) =>
+    String(Number(num) + 200)
+  );
+
   return (
     <Button
       height="100%"
       minW={0}
       p={0}
       data-color-scheme={props.colorScheme}
+      _text={{
+        color: props.color,
+        fontSize: "md",
+        fontWeight: "medium",
+      }}
       {...props}
+      bgColor={bgColor}
+      _hover={{ bgColor: hoverBgColor }}
+      _pressed={{ bgColor: pressedBgColor }}
       onPress={(e) => {
         props.onPress?.(e);
         // eslint-disable-next-line
