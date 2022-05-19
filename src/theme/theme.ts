@@ -61,7 +61,7 @@ export function wordleTheme(colorMode: ColorMode) {
         colorMode === "light" ? -1 : 0
       ),
       // Mid-Gray for unused letters:
-      unusedLetter: shadeColor(gray, colorMode === "light" ? -5 : -4),
+      unusedLetter: gray,
       // Dark gray for used letters:
       usedLetter: shadeColor(gray, colorMode === "dark" ? 2 : 0),
     },

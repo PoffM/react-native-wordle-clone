@@ -142,10 +142,15 @@ function LetterButton({
 
 /** A button on the clickable keyboard. */
 const KeyButton = memo((props: ComponentProps<typeof Button>) => {
+  const unusedLetterBg: string = useColorModeValue(
+    "unusedLetter.100",
+    "unusedLetter.400"
+  );
+
   // Override the button colorScheme because native-base's default is too dark:
   const bgColor =
     props.colorScheme === "unusedLetter"
-      ? "unusedLetter.600"
+      ? unusedLetterBg
       : `${props.colorScheme}.500`;
   const hoverBgColor = bgColor.replace(/\d*$/, (num) =>
     String(Number(num) + 100)

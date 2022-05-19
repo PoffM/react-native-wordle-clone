@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/native";
-import { Center, Text, useColorModeValue } from "native-base";
+import { Center, Factory, Text, themeTools } from "native-base";
 import { useEffect, useState } from "react";
 
 export interface LetterBoxData {
@@ -25,14 +25,6 @@ export function LetterBox({
   onRevealed,
   initiallyRevealed = false,
 }: LetterBoxProps) {
-  const textColor = useColorModeValue(undefined, "gray.50");
-  const hasLetterBorderColor = useColorModeValue(
-    "light.600",
-    "dark.600"
-  );
-
-  const noLetterBorderColor = useColorModeValue("gray.200", "gray.600");
-
   const { rotateX, scale } = useSpring({
     from: {
       rotateX: "0deg",
@@ -73,18 +65,18 @@ export function LetterBox({
     }
   }, [isSubmitted, revealed, revealDelayMs, onRevealed]);
 
-  const bgColor = revealed
+  const letterBoxVariant = revealed
     ? letterIsInRightSpot
-      ? "correct.500"
+      ? "correct"
       : letterIsInRemainingLetters
-      ? "misplaced.500"
-      : "usedLetter.500"
+      ? "misplaced"
+      : "usedLetter"
     : undefined;
 
   return (
     <animated.View
       data-testid="letter-box"
-      data-background-color={bgColor}
+      data-variant={letterBoxVariant}
       data-revealed={revealed}
       style={{
         flex: 1,
@@ -92,20 +84,48 @@ export function LetterBox({
         transform: [{ rotateX }, { scale }],
       }}
     >
-      <Center
-        size="full"
-        borderWidth={revealed ? undefined : "2px"}
-        borderColor={letter ? hasLetterBorderColor : noLetterBorderColor}
-        bg={bgColor}
-      >
-        <Text
-          fontWeight="bold"
-          fontSize="4xl"
-          color={revealed ? "gray.50" : textColor}
-        >
+      <LetterBoxView variant={letterBoxVariant}>
+        <LetterBoxText variant={revealed ? "revealed" : undefined}>
           {letter}
-        </Text>
-      </Center>
+        </LetterBoxText>
+      </LetterBoxView>
     </animated.View>
   );
 }
+
+const LetterBoxView = Factory(Center as any, {
+  baseStyle: (props) => ({
+    size: "full",
+    borderWidth: "2px",
+    borderColor: themeTools.mode("gray.200", "gray.600")(props),
+  }),
+  variants: {
+    staged: (props) => ({
+      borderColor: themeTools.mode("light.600", "dark.600")(props),
+    }),
+    correct: {
+      borderWidth: "0px",
+      bg: "correct.500",
+    },
+    misplaced: {
+      borderWidth: "0px",
+      bg: "misplaced.500",
+    },
+    usedLetter: {
+      borderWidth: "0px",
+      bg: "usedLetter.500",
+    },
+  },
+}) as any;
+
+const LetterBoxText = Factory(Text, {
+  baseStyle: {
+    fontWeight: "bold",
+    fontSize: "4xl",
+  },
+  variants: {
+    revealed: {
+      color: "gray.50",
+    },
+  },
+});
