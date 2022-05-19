@@ -31,7 +31,7 @@ export function LetterBox({
     "dark.600"
   );
 
-  const noLetterBorderColor = useColorModeValue("gray.400", "gray.600");
+  const noLetterBorderColor = useColorModeValue("gray.200", "gray.600");
 
   const { rotateX, scale } = useSpring({
     from: {
