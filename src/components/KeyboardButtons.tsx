@@ -121,7 +121,7 @@ interface LetterButtonProps {
   color?: string;
 }
 
-/** A letter button on the clickable keyboard. */
+/** A letter button on the UI keyboard. */
 function LetterButton({
   letter,
   onPress: onPressProp,
@@ -145,7 +145,7 @@ function LetterButton({
   );
 }
 
-/** A button on the clickable keyboard. */
+/** A button on the UI keyboard. */
 const KeyButton = memo((props: ComponentProps<typeof Button>) => {
   const unusedLetterBg: string = useColorModeValue(
     "unusedLetter.100",
@@ -164,12 +164,15 @@ const KeyButton = memo((props: ComponentProps<typeof Button>) => {
     String(Number(num) + 200)
   );
 
+  const btnText = props.children?.toString();
+
   return (
     <Button
+      // testID for RTL selection. e.g. "button-A" or "button-ENTER":
+      testID={`button-${btnText}`}
       height="100%"
       minW={0}
       p={0}
-      data-color-scheme={props.colorScheme}
       _text={{
         color: props.color,
         fontSize: "md",
@@ -182,7 +185,7 @@ const KeyButton = memo((props: ComponentProps<typeof Button>) => {
       onPress={(e) => {
         props.onPress?.(e);
         // eslint-disable-next-line
-        (e.target as any)?.blur();
+        (e?.target as any)?.blur?.();
       }}
     />
   );

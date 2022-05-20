@@ -90,9 +90,6 @@ export const LetterBox = memo(
 
     return (
       <Animated.View
-        testID="letter-box"
-        data-variant={letterBoxVariant}
-        data-revealed={revealed}
         style={{
           flex: 1,
           aspectRatio: 1,
@@ -107,8 +104,15 @@ export const LetterBox = memo(
           ],
         }}
       >
-        <LetterBoxView variant={letterBoxVariant}>
-          <LetterBoxText variant={revealed ? "revealed" : undefined}>
+        <LetterBoxView
+          testID="letter-box"
+          data-variant={letterBoxVariant}
+          variant={letterBoxVariant}
+        >
+          <LetterBoxText
+            testID="letter-box-text"
+            variant={revealed ? "revealed" : undefined}
+          >
             {letter}
           </LetterBoxText>
         </LetterBoxView>
