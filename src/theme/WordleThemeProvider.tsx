@@ -1,8 +1,15 @@
-import { NativeBaseProvider, useColorMode } from "native-base";
+import {
+  NativeBaseProvider,
+  NativeBaseProviderProps,
+  useColorMode,
+} from "native-base";
 import { PropsWithChildren, useMemo } from "react";
 import { wordleTheme } from "./theme";
 
-export function WordleThemeProvider({ children }: PropsWithChildren<unknown>) {
+export function WordleThemeProvider({
+  children,
+  nativeBaseProps,
+}: PropsWithChildren<{ nativeBaseProps?: Partial<NativeBaseProviderProps> }>) {
   const { colorMode, setColorMode } = useColorMode();
 
   // Only recreate the theme on color mode change:
@@ -16,6 +23,7 @@ export function WordleThemeProvider({ children }: PropsWithChildren<unknown>) {
         get: async () => colorMode ?? "light",
         set: setColorMode,
       }}
+      {...nativeBaseProps}
     >
       {children}
     </NativeBaseProvider>

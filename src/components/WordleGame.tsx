@@ -8,6 +8,8 @@ import { PostGameButtons } from "./PostGameButtons";
 
 const ALPHABET = range(0, 26).map((i) => String.fromCharCode(i + 65));
 
+const doc = typeof document === "object" ? document : null;
+
 /** Holds the game state and renders the game elements. */
 export function WordleGame(params: WordleStateParams) {
   const toast = useToast();
@@ -52,18 +54,18 @@ export function WordleGame(params: WordleStateParams) {
         submitGuess?.();
       }
     }
-    document.addEventListener("keydown", callGameFunction);
-    return () => document.removeEventListener("keydown", callGameFunction);
+    doc?.addEventListener("keydown", callGameFunction);
+    return () => doc?.removeEventListener("keydown", callGameFunction);
   }, [addLetterToGuess, removeLastLetterFromGuess, submitGuess]);
 
   // Defocus the button after clicking it,
   useEffect(() => {
     function blurElement() {
       // eslint-disable-next-line
-      (document.activeElement as any)?.blur?.();
+      (doc?.activeElement as any)?.blur?.();
     }
-    document.addEventListener("click", blurElement);
-    return () => document.removeEventListener("click", blurElement);
+    doc?.addEventListener("click", blurElement);
+    return () => doc?.removeEventListener("click", blurElement);
   }, []);
 
   // Only reveal the new colors on the keyboard UI after the letter box colors have been revealed:

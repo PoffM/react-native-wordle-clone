@@ -90,7 +90,7 @@ export const LetterBox = memo(
 
     return (
       <Animated.View
-        data-testid="letter-box"
+        testID="letter-box"
         data-variant={letterBoxVariant}
         data-revealed={revealed}
         style={{

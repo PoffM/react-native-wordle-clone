@@ -41,7 +41,7 @@ export function LetterGridRow({
   return (
     <Animated.View style={{ transform: [{ translateX }] }}>
       <HStack
-        data-testid="letter-grid-row"
+        testID="letter-grid-row"
         flex={1}
         width="100%"
         space="0.3rem"

@@ -12,6 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import { WordleInfoModal } from "./WordleInfoModal";
 
+const doc = typeof document === "object" ? document : null;
+
 export function WordleHeader() {
   const [isOpen, setOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -21,7 +23,7 @@ export function WordleHeader() {
   // When the modal closes, blur the info button:
   useEffect(() => {
     // eslint-disable-next-line
-    (document.activeElement as any)?.blur?.();
+    (doc?.activeElement as any)?.blur?.();
   }, [isOpen]);
 
   const helpLabel = "Help";
@@ -36,7 +38,7 @@ export function WordleHeader() {
           variant="subtle"
           colorScheme={buttonColor}
           onPress={() => setOpen(true)}
-          aria-label={helpLabel}
+          accessibilityLabel={helpLabel}
           title={helpLabel}
           icon={<QuestionOutlineIcon w={6} h={6} />}
         />

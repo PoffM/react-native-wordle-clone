@@ -1,13 +1,23 @@
-import { Box, NativeBaseProvider, useColorModeValue } from "native-base";
+import {
+  Box,
+  NativeBaseProvider,
+  NativeBaseProviderProps,
+  useColorModeValue,
+} from "native-base";
 import { PropsWithChildren } from "react";
 import { WordleScreen } from "./src/components/WordleScreen";
 import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";
 
 /** Wrapper with all context providers. */
-export function AppWrapper({ children }: PropsWithChildren<unknown>) {
+export function AppWrapper({
+  children,
+  nativeBaseProps,
+}: PropsWithChildren<{ nativeBaseProps?: Partial<NativeBaseProviderProps> }>) {
   return (
-    <NativeBaseProvider>
-      <WordleThemeProvider>{children}</WordleThemeProvider>
+    <NativeBaseProvider {...nativeBaseProps}>
+      <WordleThemeProvider nativeBaseProps={nativeBaseProps}>
+        {children}
+      </WordleThemeProvider>
     </NativeBaseProvider>
   );
 }

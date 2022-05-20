@@ -1,4 +1,4 @@
-import { waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react-native";
 import { renderWithContext } from "../test-util/render-with-context";
 import { WordleGame } from "./WordleGame";
 
