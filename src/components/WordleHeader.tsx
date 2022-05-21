@@ -32,7 +32,7 @@ export function WordleHeader() {
   } mode.`;
 
   return (
-    <Row alignItems="center" h="3rem" borderBottomWidth="1px" px={3}>
+    <Row alignItems="center" h={12} borderBottomWidth="1px" px={3}>
       <Row flex={1} alignItems="center">
         <IconButton
           variant="subtle"
@@ -46,7 +46,7 @@ export function WordleHeader() {
       <Box>
         <Heading size="lg">React Native Wordle Clone</Heading>
       </Box>
-      <Row flex={1} justifyContent="end">
+      <Row flex={1} justifyContent="flex-end">
         <IconButton
           variant="subtle"
           colorScheme={buttonColor}

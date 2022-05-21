@@ -98,7 +98,7 @@ export function useWordleState(params: WordleStateParams = {}) {
           return state;
         }
 
-        const lastGuess = state.submittedGuesses.at(-1);
+        const lastGuess = state.submittedGuesses[state.submittedGuesses.length - 2];
 
         const newStatus =
           lastGuess === state.solution

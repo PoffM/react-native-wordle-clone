@@ -33,7 +33,7 @@ export function WordleInfoModal({
             <VStack space={4}>
               <Text fontWeight="bold">Examples</Text>
               <Box>
-                <Box w="20rem" mb={1}>
+                <Box w={320} mb={1}>
                   <LetterGridRow
                     columnData={[
                       {
@@ -54,7 +54,7 @@ export function WordleInfoModal({
                 </Text>
               </Box>
               <Box>
-                <Box w="20rem" mb={1}>
+                <Box w={320} mb={1}>
                   <LetterGridRow
                     columnData={[
                       { letter: "P" },
@@ -70,7 +70,7 @@ export function WordleInfoModal({
                 <Text>The letter I is in the word but in the wrong spot.</Text>
               </Box>
               <Box>
-                <Box w="20rem" mb={1}>
+                <Box w={320} mb={1}>
                   <LetterGridRow
                     columnData={[
                       { letter: "V" },

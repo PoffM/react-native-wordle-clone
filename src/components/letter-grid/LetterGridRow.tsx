@@ -44,7 +44,7 @@ export function LetterGridRow({
         testID="letter-grid-row"
         flex={1}
         width="100%"
-        space="0.3rem"
+        space={1.5}
       >
         {columnData.map((letterBoxData, letterPosition) => {
           const isLast = letterPosition === columnData.length - 1;

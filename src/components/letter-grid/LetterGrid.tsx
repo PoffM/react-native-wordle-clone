@@ -14,9 +14,9 @@ export function LetterGrid({ wordleState, onRowRevealed }: LetterGridProps) {
   return (
     <VStack
       width="100%"
-      maxW="21rem"
-      space="0.3rem"
-      margin="0.3rem"
+      maxW={336}
+      space={1.5}
+      margin={2}
       // Any component state should be lost when the solution is changed (e.g. for a new game):
       key={wordleState.solution}
     >
