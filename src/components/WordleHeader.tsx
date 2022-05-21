@@ -44,7 +44,7 @@ export function WordleHeader() {
         />
       </Row>
       <Box>
-        <Heading size="lg">React Native Wordle Clone</Heading>
+        <Heading size="lg">React Native Wordle</Heading>
       </Box>
       <Row flex={1} justifyContent="flex-end">
         <IconButton
