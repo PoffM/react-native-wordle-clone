@@ -1,5 +1,5 @@
-import { VStack } from "native-base";
 import { range } from "lodash";
+import { VStack } from "native-base";
 import { WordleState } from "../../hooks/useWordleState";
 import { LetterGridRow, LetterGridRowProps } from "./LetterGridRow";
 
@@ -13,7 +13,7 @@ export function LetterGrid({ wordleState, onRowRevealed }: LetterGridProps) {
 
   return (
     <VStack
-      width="100%"
+      width="full"
       maxW={336}
       space={1.5}
       margin={2}

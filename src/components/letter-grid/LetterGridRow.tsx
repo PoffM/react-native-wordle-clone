@@ -39,13 +39,8 @@ export function LetterGridRow({
   }, [rowError]);
 
   return (
-    <Animated.View style={{ transform: [{ translateX }] }}>
-      <HStack
-        testID="letter-grid-row"
-        flex={1}
-        width="100%"
-        space={1.5}
-      >
+    <Animated.View style={{ flexGrow: 1, transform: [{ translateX }] }}>
+      <HStack testID="letter-grid-row" space={1.5}>
         {columnData.map((letterBoxData, letterPosition) => {
           const isLast = letterPosition === columnData.length - 1;
 
