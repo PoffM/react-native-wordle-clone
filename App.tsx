@@ -5,6 +5,7 @@ import {
   useColorModeValue,
 } from "native-base";
 import { PropsWithChildren } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { WordleScreen } from "./src/components/WordleScreen";
 import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";
 
@@ -34,9 +35,11 @@ function BackgroundProvider({ children }: PropsWithChildren<{}>) {
 export default function App() {
   return (
     <AppWrapper>
-      <BackgroundProvider>
-        <WordleScreen />
-      </BackgroundProvider>
+      <SafeAreaView style={{ height: "100%" }}>
+        <BackgroundProvider>
+          <WordleScreen />
+        </BackgroundProvider>
+      </SafeAreaView>
     </AppWrapper>
   );
 }
