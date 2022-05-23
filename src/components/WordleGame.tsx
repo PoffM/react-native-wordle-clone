@@ -1,5 +1,14 @@
 import { get, range } from "lodash";
-import { Alert, Box, Center, Flex, useToast } from "native-base";
+import {
+  Alert,
+  Box,
+  Center,
+  Flex,
+  Row,
+  Text,
+  useToast,
+  WarningIcon,
+} from "native-base";
 import { useEffect, useMemo } from "react";
 import { useWordleState, WordleStateParams } from "../hooks/useWordleState";
 import { KeyboardButtons } from "./KeyboardButtons";
@@ -31,7 +40,14 @@ export function WordleGame(params: WordleStateParams) {
         duration: 2000,
         placement: "top",
         description,
-        render: () => <Alert status="warning">{description}</Alert>,
+        render: () => (
+          <Alert status="warning">
+            <Row space={2} alignItems="center">
+              <WarningIcon color="black" />
+              <Text color="black">{description}</Text>
+            </Row>
+          </Alert>
+        ),
       });
     }
   }, [wordleState.currentGuessError]);
