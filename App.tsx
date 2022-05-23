@@ -2,12 +2,12 @@ import {
   Box,
   NativeBaseProvider,
   NativeBaseProviderProps,
-  useColorModeValue,
+  useColorModeValue
 } from "native-base";
 import { PropsWithChildren } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WordleScreen } from "./src/components/WordleScreen";
-import { WordleThemeProvider } from "./src/theme/WordleThemeProvider";
+import { wordleTheme } from "./src/theme/theme";
 
 /** Wrapper with all context providers. */
 export function AppWrapper({
@@ -15,10 +15,8 @@ export function AppWrapper({
   nativeBaseProps,
 }: PropsWithChildren<{ nativeBaseProps?: Partial<NativeBaseProviderProps> }>) {
   return (
-    <NativeBaseProvider {...nativeBaseProps}>
-      <WordleThemeProvider nativeBaseProps={nativeBaseProps}>
-        {children}
-      </WordleThemeProvider>
+    <NativeBaseProvider theme={wordleTheme} {...nativeBaseProps}>
+      {children}
     </NativeBaseProvider>
   );
 }

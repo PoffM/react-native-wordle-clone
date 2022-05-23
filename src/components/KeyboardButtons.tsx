@@ -147,22 +147,26 @@ function LetterButton({
 
 /** A button on the UI keyboard. */
 const KeyButton = memo((props: ComponentProps<typeof Button>) => {
-  const unusedLetterBg: string = useColorModeValue(
-    "unusedLetter.100",
-    "unusedLetter.400"
-  );
+  // Override the button colorSchemes because native-base's defaults may be too light or dark depending on the color mode:
+  const colorSchemes: Record<string, [string, string, string]> = {
+    correct: ["correct.500", "correct.600", "correct.700"],
+    misplaced: useColorModeValue(
+      ["misplaced.400", "misplaced.500", "misplaced.600"],
+      ["misplaced.500", "misplaced.600", "misplaced.700"]
+    ),
+    usedLetter: useColorModeValue(
+      ["usedLetter.500", "usedLetter.600", "usedLetter.700"],
+      ["usedLetter.700", "usedLetter.800", "usedLetter.900"]
+    ),
+    unusedLetter: useColorModeValue(
+      ["unusedLetter.100", "unusedLetter.200", "unusedLetter.300"],
+      ["unusedLetter.400", "unusedLetter.500", "unusedLetter.600"]
+    ),
+  };
 
-  // Override the button colorScheme because native-base's default is too dark:
-  const bgColor =
-    props.colorScheme === "unusedLetter"
-      ? unusedLetterBg
-      : `${props.colorScheme}.500`;
-  const hoverBgColor = bgColor.replace(/\d*$/, (num) =>
-    String(Number(num) + 100)
-  );
-  const pressedBgColor = bgColor.replace(/\d*$/, (num) =>
-    String(Number(num) + 200)
-  );
+  const [baseColor, hover, pressed] = props.colorScheme
+    ? colorSchemes[String(props.colorScheme)]
+    : [];
 
   const btnText = props.children?.toString();
 
@@ -179,9 +183,9 @@ const KeyButton = memo((props: ComponentProps<typeof Button>) => {
         fontWeight: "medium",
       }}
       {...props}
-      bgColor={bgColor}
-      _hover={{ bgColor: hoverBgColor }}
-      _pressed={{ bgColor: pressedBgColor }}
+      bgColor={baseColor}
+      _hover={{ bgColor: hover }}
+      _pressed={{ bgColor: pressed }}
       onPress={(e) => {
         props.onPress?.(e);
         // eslint-disable-next-line

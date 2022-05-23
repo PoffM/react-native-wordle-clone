@@ -138,10 +138,10 @@ const LetterBoxView = Factory(Center as any, {
       borderWidth: "0px",
       bg: "correct.500",
     },
-    misplaced: {
+    misplaced: (props) => ({
       borderWidth: "0px",
-      bg: "misplaced.500",
-    },
+      bg: themeTools.mode("misplaced.400", "misplaced.500")(props),
+    }),
     usedLetter: {
       borderWidth: "0px",
       bg: "usedLetter.500",
