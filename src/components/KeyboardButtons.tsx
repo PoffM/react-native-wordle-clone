@@ -75,7 +75,7 @@ export const KeyboardButtons = memo(
     }
 
     return (
-      <VStack h="100%" space={space} padding={space}>
+      <VStack h="100%" space={space}>
         <HStack {...hStackProps}>
           {"QWERTYUIOP".split("").map((letter) => (
             <LetterButton {...letterButtonProps(letter)} key={letter} />

@@ -94,7 +94,13 @@ export function WordleGame(params: WordleStateParams) {
   );
 
   return (
-    <Flex width="100%" maxW={500} height="100%" flexDirection="column">
+    <Flex
+      width="100%"
+      maxW={500}
+      height="100%"
+      flexDirection="column"
+      padding={1.5}
+    >
       <Center flex={1}>
         <LetterGrid wordleState={wordleState} onRowRevealed={continueGame} />
       </Center>
