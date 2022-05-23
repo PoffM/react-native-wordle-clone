@@ -6,7 +6,7 @@ describe("WordleHeader", () => {
   it("Opens a How to Play modal when you click on the question mark button.", () => {
     const { ui } = renderWithContext(<WordleHeader />);
 
-    fireEvent.press(ui.getByLabelText("Help"))
+    fireEvent.press(ui.getByLabelText("Help"));
 
     // Opens the Help modal:
     expect(ui.getByText("How to Play")).toBeTruthy();
