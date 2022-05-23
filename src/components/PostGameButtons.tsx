@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text, VStack } from "native-base";
+import { Button, Column, Heading, Row, Text } from "native-base";
 import { WordleState } from "../hooks/useWordleState";
 
 export interface PostGameButtonsProps {
@@ -11,23 +11,25 @@ export function PostGameButtons({
   onRestartPress,
 }: PostGameButtonsProps) {
   return (
-    <VStack>
+    <Column space={2}>
       {status === "LOST" && (
-        <Box textAlign="center">
-          <Heading size="sm">SOLUTION</Heading>
-          <Text fontSize="3xl">{solution}</Text>
-        </Box>
+        <Row justifyContent="center">
+          <Column alignItems="center">
+            <Heading size="sm">SOLUTION</Heading>
+            <Text fontSize="3xl">{solution}</Text>
+          </Column>
+        </Row>
       )}
       {status === "WON" && (
-        <Box textAlign="center">
+        <Row justifyContent="center">
           <Text fontSize="3xl">WINNER!</Text>
-        </Box>
+        </Row>
       )}
-      <Flex w="100%">
+      <Row justifyContent="center">
         <Button flex={1} colorScheme="correct" onPress={onRestartPress}>
           Next Word
         </Button>
-      </Flex>
-    </VStack>
+      </Row>
+    </Column>
   );
 }
