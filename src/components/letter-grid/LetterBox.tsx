@@ -27,7 +27,13 @@ export const LetterBox = memo(
     initiallyRevealed = false,
   }: LetterBoxProps) => {
     const scale = useRef(new Animated.Value(1)).current;
-    const rotateX = useRef(new Animated.Value(0)).current;
+    const flipAnim = useRef(new Animated.Value(0)).current;
+
+    const rotateX = flipAnim.interpolate({
+      inputRange: [0, 1],
+      // Not sure why but a rotation of -90deg causes the screen to flicker, so cap it a bit lower:
+      outputRange: ["0deg", "-89.95deg"],
+    });
 
     // Pop-in animation when the letter is entered:
     useEffect(() => {
@@ -59,7 +65,7 @@ export const LetterBox = memo(
     useEffect(() => {
       if (isSubmitted && !revealed) {
         // Flip down:
-        Animated.timing(rotateX, {
+        Animated.timing(flipAnim, {
           useNativeDriver: true,
           toValue: 1,
           duration: 150,
@@ -69,7 +75,7 @@ export const LetterBox = memo(
           setRevealed(true);
           onRevealed?.();
           // Flip back up:
-          Animated.timing(rotateX, {
+          Animated.timing(flipAnim, {
             useNativeDriver: true,
             toValue: 0,
             duration: 150,
@@ -93,15 +99,7 @@ export const LetterBox = memo(
         style={{
           flex: 1,
           aspectRatio: 1,
-          transform: [
-            { scale },
-            {
-              rotateX: rotateX.interpolate({
-                inputRange: [0, 1],
-                outputRange: ["0deg", "-90deg"],
-              }),
-            },
-          ],
+          transform: [{ scale }, { rotateX }],
         }}
       >
         <LetterBoxView
