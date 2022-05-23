@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 import COMMON_WORDS from "../word-list/common-words.json";
 import UNCOMMON_WORDS from "../word-list/uncommon-words.json";
 
@@ -23,107 +23,100 @@ export function useWordleState(params: WordleStateParams = {}) {
     makeInitialState(params.solution)
   );
 
-  const addLetterToGuess = useCallback((charCode: number) => {
-    setWordleState((state) => {
-      if (state.status !== "GUESSING") {
-        return state;
-      }
-
-      const newGuess = (
-        state.currentGuess + String.fromCharCode(charCode)
-      ).slice(0, state.wordLength);
-      return {
-        ...state,
-        currentGuessError: null,
-        currentGuess: newGuess,
-      };
-    });
-  }, []);
-
-  const removeLastLetterFromGuess = useCallback(
-    () =>
-      setWordleState((state) => {
-        if (state.status !== "GUESSING") {
-          return state;
-        }
-
-        return {
-          ...state,
-          currentGuessError: null,
-          currentGuess: state.currentGuess.slice(0, -1),
-        };
-      }),
-    []
-  );
-
-  const submitGuess = useCallback(
-    () =>
-      setWordleState((state) => {
-        if (state.status !== "GUESSING") {
-          return state;
-        }
-
-        const currentGuessError =
-          state.currentGuess.length < state.solution.length
-            ? { message: "Not enough letters." }
-            : !VALID_WORDS.includes(state.currentGuess)
-            ? { message: "Word not in word list." }
-            : null;
-
-        if (currentGuessError) {
-          return { ...state, currentGuessError };
-        }
-
-        const newSubmittedGuesses = [
-          ...state.submittedGuesses,
-          state.currentGuess,
-        ];
-
-        const newStatus = "REVEALING";
-
-        return {
-          ...state,
-          submittedGuesses: newSubmittedGuesses,
-          currentGuess: "",
-          status: newStatus,
-        };
-      }),
-    []
-  );
-
-  const continueGame = useCallback(
-    () =>
-      setWordleState((state) => {
-        if (state.status !== "REVEALING") {
-          return state;
-        }
-
-        const lastGuess = state.submittedGuesses[state.submittedGuesses.length - 2];
-
-        const newStatus =
-          lastGuess === state.solution
-            ? "WON"
-            : state.submittedGuesses.length >= state.maxGuesses
-            ? "LOST"
-            : "GUESSING";
-
-        return { ...state, status: newStatus };
-      }),
-    []
-  );
-
-  const restart = useCallback(
-    () => setWordleState(() => makeInitialState()),
-    []
-  );
-
   return {
     wordleState,
-    restart,
-    continueGame,
-    addLetterToGuess,
-    removeLastLetterFromGuess,
-    submitGuess,
+    ...useMemo(
+      () => ({
+        addLetterToGuess(charCode: number) {
+          setWordleState((state) => {
+            if (state.status !== "GUESSING") {
+              return state;
+            }
+
+            const newGuess = (
+              state.currentGuess + String.fromCharCode(charCode)
+            ).slice(0, state.wordLength);
+            return {
+              ...state,
+              currentGuessError: null,
+              currentGuess: newGuess,
+            };
+          });
+        },
+
+        removeLastLetterFromGuess() {
+          setWordleState((state) => {
+            if (state.status !== "GUESSING") {
+              return state;
+            }
+
+            return {
+              ...state,
+              currentGuessError: null,
+              currentGuess: state.currentGuess.slice(0, -1),
+            };
+          });
+        },
+
+        submitGuess() {
+          setWordleState((state) => {
+            if (state.status !== "GUESSING") {
+              return state;
+            }
+
+            const currentGuessError =
+              state.currentGuess.length < state.solution.length
+                ? { message: "Not enough letters." }
+                : !VALID_WORDS.includes(state.currentGuess)
+                ? { message: "Word not in word list." }
+                : null;
+
+            if (currentGuessError) {
+              return { ...state, currentGuessError };
+            }
+
+            const newSubmittedGuesses = [
+              ...state.submittedGuesses,
+              state.currentGuess,
+            ];
+
+            const newStatus = "REVEALING";
+
+            return {
+              ...state,
+              submittedGuesses: newSubmittedGuesses,
+              currentGuess: "",
+              status: newStatus,
+            };
+          });
+        },
+
+        continueGame() {
+          setWordleState((state) => {
+            if (state.status !== "REVEALING") {
+              return state;
+            }
+
+            const lastGuess =
+              state.submittedGuesses[state.submittedGuesses.length - 2];
+
+            const newStatus =
+              lastGuess === state.solution
+                ? "WON"
+                : state.submittedGuesses.length >= state.maxGuesses
+                ? "LOST"
+                : "GUESSING";
+
+            return { ...state, status: newStatus };
+          });
+        },
+
+        restart() {
+          setWordleState(() => makeInitialState());
+        },
+      }),
+      [setWordleState]
+    ),
   };
 }
 
