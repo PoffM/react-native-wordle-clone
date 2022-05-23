@@ -2,7 +2,7 @@ import {
   Box,
   NativeBaseProvider,
   NativeBaseProviderProps,
-  useColorModeValue
+  useColorModeValue,
 } from "native-base";
 import { PropsWithChildren } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,8 +21,10 @@ export function AppWrapper({
   );
 }
 
-function BackgroundProvider({ children }: PropsWithChildren<{}>) {
-  const bg = useColorModeValue("white", "gray.900");
+function BackgroundProvider({
+  children,
+}: PropsWithChildren<Record<string, unknown>>) {
+  const bg = useColorModeValue("white", "gray.900") as string;
   return (
     <Box size="full" bg={bg}>
       {children}
