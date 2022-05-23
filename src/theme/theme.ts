@@ -13,7 +13,10 @@ const gray = {
   900: "#0c0c0d",
 };
 
-const overrides: Theme | (Record<string, unknown> & Record<string, unknown>) = {
+const overrides: Theme | Record<string, object> = {
+  config: {
+    useSystemColorMode: true,
+  },
   components: {
     Box: {
       baseStyle: (props: unknown) => ({
