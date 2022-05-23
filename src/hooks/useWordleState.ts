@@ -23,6 +23,9 @@ export function useWordleState(params: WordleStateParams = {}) {
     makeInitialState(params.solution)
   );
 
+  console.log({sol:wordleState.solution })
+  console.log({wordleState })
+
   return {
     wordleState,
     ...useMemo(
@@ -98,7 +101,7 @@ export function useWordleState(params: WordleStateParams = {}) {
             }
 
             const lastGuess =
-              state.submittedGuesses[state.submittedGuesses.length - 2];
+              state.submittedGuesses[state.submittedGuesses.length - 1];
 
             const newStatus =
               lastGuess === state.solution
