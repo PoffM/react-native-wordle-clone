@@ -1,18 +1,12 @@
-import {
-  Box,
-  Button,
-  Divider,
-  IModalProps,
-  Modal,
-  Text,
-  VStack,
-} from "native-base";
+import { Box, Button, Divider, Modal, Text, VStack } from "native-base";
 import { LetterGridRow } from "./letter-grid/LetterGridRow";
 
-export function WordleInfoModal({
-  isOpen,
-  onClose,
-}: Pick<IModalProps, "isOpen" | "onClose">) {
+export interface WordleInfoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Content>

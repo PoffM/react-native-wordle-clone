@@ -13,10 +13,11 @@ const gray = {
   900: "#0c0c0d",
 };
 
-const overrides: Theme | (Record<string, any> & {}) = {
+const overrides: Theme | (Record<string, unknown> & Record<string, unknown>) = {
   components: {
     Box: {
-      baseStyle: (props: any) => ({
+      baseStyle: (props: unknown) => ({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         borderColor: themeTools.mode("gray.200", "gray.700")(props),
       }),
     },

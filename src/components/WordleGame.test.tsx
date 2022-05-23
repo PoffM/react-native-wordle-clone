@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { fireEvent } from "@testing-library/react-native";
-import { Animated } from "react-native";
 import { renderWithContext } from "../test-util/render-with-context";
 import { WordleGame } from "./WordleGame";
 

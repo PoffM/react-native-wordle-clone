@@ -1,5 +1,5 @@
 import { Center, Factory, Text, themeTools } from "native-base";
-import { memo, useEffect, useRef, useState } from "react";
+import { ComponentType, memo, useEffect, useRef, useState } from "react";
 import { Animated } from "react-native";
 
 export interface LetterBoxData {
@@ -16,120 +16,120 @@ export interface LetterBoxProps extends LetterBoxData {
   initiallyRevealed?: boolean;
 }
 
-export const LetterBox = memo(
-  ({
-    letterIsInRightSpot,
-    letterIsInRemainingLetters,
-    letter,
-    isSubmitted,
-    revealDelayMs,
-    onRevealed,
-    initiallyRevealed = false,
-  }: LetterBoxProps) => {
-    const scale = useRef(new Animated.Value(1)).current;
-    const flipAnim = useRef(new Animated.Value(0)).current;
+export const LetterBox = memo(function LetterBox({
+  letterIsInRightSpot,
+  letterIsInRemainingLetters,
+  letter,
+  isSubmitted,
+  revealDelayMs,
+  onRevealed,
+  initiallyRevealed = false,
+}: LetterBoxProps) {
+  const scaleRef = useRef(new Animated.Value(1));
+  const scale = scaleRef.current;
 
-    const rotateX = flipAnim.interpolate({
-      inputRange: [0, 1],
-      // Not sure why but a rotation of -90deg causes the screen to flicker, so cap it a bit lower:
-      outputRange: ["0deg", "-89.95deg"],
-    });
+  const flipAnimRef = useRef(new Animated.Value(0));
+  const rotateX = flipAnimRef.current.interpolate({
+    inputRange: [0, 1],
+    // Not sure why but a rotation of -90deg causes the screen to flicker, so cap it a bit lower:
+    outputRange: ["0deg", "-89.95deg"],
+  });
 
-    // Pop-in animation when the letter is entered:
-    useEffect(() => {
-      void (async () => {
-        if (letter) {
-          Animated.sequence([
-            Animated.timing(scale, {
-              useNativeDriver: true,
-              toValue: 0.8,
-              duration: 0,
-            }),
-            Animated.timing(scale, {
-              useNativeDriver: true,
-              toValue: 1.1,
-              duration: 40,
-            }),
-            Animated.timing(scale, {
-              useNativeDriver: true,
-              toValue: 1,
-              duration: 80,
-            }),
-          ]).start();
-        }
-      })();
-    }, [letter]);
-
-    // Flip animation to reveal the answer:
-    const [revealed, setRevealed] = useState(initiallyRevealed);
-    useEffect(() => {
-      if (isSubmitted && !revealed) {
-        // Flip down:
-        Animated.timing(flipAnim, {
+  // Pop-in animation when the letter is entered:
+  useEffect(() => {
+    if (letter) {
+      Animated.sequence([
+        Animated.timing(scaleRef.current, {
+          useNativeDriver: true,
+          toValue: 0.8,
+          duration: 0,
+        }),
+        Animated.timing(scaleRef.current, {
+          useNativeDriver: true,
+          toValue: 1.1,
+          duration: 40,
+        }),
+        Animated.timing(scaleRef.current, {
           useNativeDriver: true,
           toValue: 1,
+          duration: 80,
+        }),
+      ]).start();
+    }
+  }, [letter]);
+
+  // Flip animation to reveal the answer:
+  const [revealed, setRevealed] = useState(initiallyRevealed);
+  useEffect(() => {
+    if (isSubmitted && !revealed) {
+      // Flip down:
+      Animated.timing(flipAnimRef.current, {
+        useNativeDriver: true,
+        toValue: 1,
+        duration: 150,
+        delay: revealDelayMs,
+      }).start(() => {
+        // Change the state to "revealed" when the box is at 90 degrees (which makes it invisible):
+        setRevealed(true);
+        onRevealed?.();
+        // Flip back up:
+        Animated.timing(flipAnimRef.current, {
+          useNativeDriver: true,
+          toValue: 0,
           duration: 150,
-          delay: revealDelayMs,
-        }).start(() => {
-          // Change the state to "revealed" when the box is at 90 degrees (which makes it invisible):
-          setRevealed(true);
-          onRevealed?.();
-          // Flip back up:
-          Animated.timing(flipAnim, {
-            useNativeDriver: true,
-            toValue: 0,
-            duration: 150,
-          }).start();
-        });
-      }
-    }, [isSubmitted, revealed, revealDelayMs, onRevealed]);
+        }).start();
+      });
+    }
+  }, [isSubmitted, revealed, revealDelayMs, onRevealed]);
 
-    const letterBoxVariant = revealed
-      ? letterIsInRightSpot
-        ? "correct"
-        : letterIsInRemainingLetters
-        ? "misplaced"
-        : "usedLetter"
-      : !!letter
-      ? "staged"
-      : undefined;
+  const letterBoxVariant = revealed
+    ? letterIsInRightSpot
+      ? "correct"
+      : letterIsInRemainingLetters
+      ? "misplaced"
+      : "usedLetter"
+    : letter
+    ? "staged"
+    : undefined;
 
-    return (
-      <Animated.View
-        style={{
-          flex: 1,
-          aspectRatio: 1,
-          transform: [{ scale }, { rotateX }],
-        }}
+  return (
+    <Animated.View
+      style={{
+        flex: 1,
+        aspectRatio: 1,
+        transform: [{ scale }, { rotateX }],
+      }}
+    >
+      <LetterBoxView
+        testID="letter-box"
+        data-variant={letterBoxVariant}
+        variant={letterBoxVariant}
       >
-        <LetterBoxView
-          testID="letter-box"
-          data-variant={letterBoxVariant}
-          variant={letterBoxVariant}
-        >
-          <Animated.View style={{ transform: [{ scale: 2.5 }] }}>
-            <LetterBoxText
-              textBreakStrategy="simple"
-              testID="letter-box-text"
-              variant={revealed ? "revealed" : undefined}
-            >
-              {letter}
-            </LetterBoxText>
-          </Animated.View>
-        </LetterBoxView>
-      </Animated.View>
-    );
-  }
-);
+        <Animated.View style={{ transform: [{ scale: 2.5 }] }}>
+          <LetterBoxText
+            textBreakStrategy="simple"
+            testID="letter-box-text"
+            variant={revealed ? "revealed" : undefined}
+          >
+            {letter}
+          </LetterBoxText>
+        </Animated.View>
+      </LetterBoxView>
+    </Animated.View>
+  );
+});
 
-const LetterBoxView = Factory(Center as any, {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const LetterBoxView = Factory(Center as ComponentType<unknown>, {
   baseStyle: (props) => ({
     size: "full",
     borderWidth: "2px",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     borderColor: themeTools.mode("gray.200", "gray.600")(props),
   }),
   variants: {
     staged: (props) => ({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       borderColor: themeTools.mode("gray.500", "gray.300")(props),
     }),
     correct: {
@@ -138,6 +138,7 @@ const LetterBoxView = Factory(Center as any, {
     },
     misplaced: (props) => ({
       borderWidth: "0px",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       bg: themeTools.mode("misplaced.400", "misplaced.500")(props),
     }),
     usedLetter: {
@@ -145,6 +146,7 @@ const LetterBoxView = Factory(Center as any, {
       bg: "usedLetter.500",
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }) as any;
 
 const LetterBoxText = Factory(Text, {

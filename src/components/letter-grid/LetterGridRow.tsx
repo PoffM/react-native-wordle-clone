@@ -20,7 +20,8 @@ export function LetterGridRow({
   initiallyRevealed,
 }: LetterGridRowProps) {
   // Shake horizontally when there is a new error:
-  const translateX = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+  const translateXRef = useRef(new Animated.Value(0)); // Initial value for opacity: 0
+  const translateX = translateXRef.current;
 
   useEffect(() => {
     if (rowError) {
@@ -28,7 +29,7 @@ export function LetterGridRow({
       const duration = 500 / shakePath.length;
       Animated.sequence(
         shakePath.map((x) =>
-          Animated.timing(translateX, {
+          Animated.timing(translateXRef.current, {
             useNativeDriver: true,
             toValue: x,
             duration,

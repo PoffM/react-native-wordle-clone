@@ -50,6 +50,7 @@ export function WordleGame(params: WordleStateParams) {
         ),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wordleState.currentGuessError]);
 
   // Key presses change the game state:

@@ -18,7 +18,7 @@ export function WordleHeader() {
   const [isOpen, setOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
 
-  const buttonColor = useColorModeValue("gray", "dark");
+  const buttonColor = useColorModeValue("gray", "dark") as string;
 
   // When the modal closes, blur the info button:
   useEffect(() => {

@@ -27,7 +27,7 @@ export function useWordleState(params: WordleStateParams = {}) {
     wordleState,
     ...useMemo(
       () => ({
-        addLetterToGuess(charCode: number) {
+        addLetterToGuess: (charCode: number) => {
           setWordleState((state) => {
             if (state.status !== "GUESSING") {
               return state;
@@ -44,7 +44,7 @@ export function useWordleState(params: WordleStateParams = {}) {
           });
         },
 
-        removeLastLetterFromGuess() {
+        removeLastLetterFromGuess: () => {
           setWordleState((state) => {
             if (state.status !== "GUESSING") {
               return state;
@@ -58,7 +58,7 @@ export function useWordleState(params: WordleStateParams = {}) {
           });
         },
 
-        submitGuess() {
+        submitGuess: () => {
           setWordleState((state) => {
             if (state.status !== "GUESSING") {
               return state;
@@ -91,7 +91,7 @@ export function useWordleState(params: WordleStateParams = {}) {
           });
         },
 
-        continueGame() {
+        continueGame: () => {
           setWordleState((state) => {
             if (state.status !== "REVEALING") {
               return state;
@@ -111,11 +111,11 @@ export function useWordleState(params: WordleStateParams = {}) {
           });
         },
 
-        restart() {
+        restart: () => {
           setWordleState(() => makeInitialState());
         },
       }),
-      [setWordleState]
+      []
     ),
   };
 }
