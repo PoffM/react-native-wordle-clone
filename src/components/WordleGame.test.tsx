@@ -3,14 +3,6 @@ import { Animated } from "react-native";
 import { renderWithContext } from "../test-util/render-with-context";
 import { WordleGame } from "./WordleGame";
 
-// Make all animations run instantly so tests don't have to wait for them:
-const animationTiming = Animated.timing;
-jest
-  .spyOn(Animated, "timing")
-  .mockImplementation((value, config) =>
-    animationTiming(value, { ...config, duration: 0, delay: 0 })
-  );
-
 describe("WordleGame component", () => {
   it("Renders the initial blank state.", () => {
     const { ui } = renderWithContext(<WordleGame solution="HELLO" />);
