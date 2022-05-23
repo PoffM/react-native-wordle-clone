@@ -109,12 +109,15 @@ export const LetterBox = memo(
           data-variant={letterBoxVariant}
           variant={letterBoxVariant}
         >
-          <LetterBoxText
-            testID="letter-box-text"
-            variant={revealed ? "revealed" : undefined}
-          >
-            {letter}
-          </LetterBoxText>
+          <Animated.View style={{ transform: [{ scale: 2.5 }] }}>
+            <LetterBoxText
+              textBreakStrategy="simple"
+              testID="letter-box-text"
+              variant={revealed ? "revealed" : undefined}
+            >
+              {letter}
+            </LetterBoxText>
+          </Animated.View>
         </LetterBoxView>
       </Animated.View>
     );
@@ -149,7 +152,6 @@ const LetterBoxView = Factory(Center as any, {
 const LetterBoxText = Factory(Text, {
   baseStyle: {
     fontWeight: "bold",
-    fontSize: "4xl",
   },
   variants: {
     revealed: {
