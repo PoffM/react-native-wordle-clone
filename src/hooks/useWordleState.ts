@@ -23,9 +23,6 @@ export function useWordleState(params: WordleStateParams = {}) {
     makeInitialState(params.solution)
   );
 
-  console.log({sol:wordleState.solution })
-  console.log({wordleState })
-
   return {
     wordleState,
     ...useMemo(
