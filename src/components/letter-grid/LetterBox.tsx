@@ -25,8 +25,11 @@ export const LetterBox = memo(function LetterBox({
   onRevealed,
   initiallyRevealed = false,
 }: LetterBoxProps) {
-  const scaleRef = useRef(new Animated.Value(1));
-  const scale = scaleRef.current;
+  const scaleRef = useRef(new Animated.Value(0));
+  const scale = scaleRef.current.interpolate({
+    inputRange: [0, 0.001, 0.33, 1],
+    outputRange: [1, 0.8, 1.1, 1],
+  });
 
   const flipAnimRef = useRef(new Animated.Value(0));
   const rotateX = flipAnimRef.current.interpolate({
@@ -41,18 +44,13 @@ export const LetterBox = memo(function LetterBox({
       Animated.sequence([
         Animated.timing(scaleRef.current, {
           useNativeDriver: true,
-          toValue: 0.8,
+          toValue: 0,
           duration: 0,
         }),
         Animated.timing(scaleRef.current, {
           useNativeDriver: true,
-          toValue: 1.1,
-          duration: 40,
-        }),
-        Animated.timing(scaleRef.current, {
-          useNativeDriver: true,
           toValue: 1,
-          duration: 80,
+          duration: 120,
         }),
       ]).start();
     }
