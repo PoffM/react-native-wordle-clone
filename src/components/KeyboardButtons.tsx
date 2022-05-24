@@ -1,4 +1,5 @@
 import { flatMap } from "lodash";
+import { observer } from "mobx-react-lite";
 import { Box, Button, HStack, useColorModeValue, VStack } from "native-base";
 import { ComponentProps, memo, useCallback } from "react";
 
@@ -6,17 +7,20 @@ export interface KeyboardButtonsProps {
   onLetterPress?: (charCode: number) => void;
   onEnterPress?: () => void;
   onBackspacePress?: () => void;
-  submittedGuesses: string[];
-  solution: string;
+  submittedGuesses: () => string[];
+  solution: () => string;
 }
 
-export const KeyboardButtons = memo(function KeyboardButtons({
+export const KeyboardButtons = observer(function KeyboardButtons({
   onLetterPress,
   onEnterPress,
   onBackspacePress,
   submittedGuesses,
   solution,
 }: KeyboardButtonsProps) {
+  const unusedLetterTextColor = useColorModeValue("black", "gray.50") as string;
+  const usedLetterTextColor = "gray.50";
+
   const space = 1.5;
 
   const hStackProps = {
@@ -26,7 +30,7 @@ export const KeyboardButtons = memo(function KeyboardButtons({
   };
 
   const submittedLetters = flatMap(
-    submittedGuesses
+    submittedGuesses()
       .map((guess) => guess.split(""))
       .map((letters) => letters.map((letter, index) => ({ letter, index })))
   );
@@ -35,20 +39,18 @@ export const KeyboardButtons = memo(function KeyboardButtons({
 
   const correctLetters = new Set(
     submittedLetters
-      .filter(({ letter, index }) => solution[index] === letter)
+      .filter(({ letter, index }) => solution()[index] === letter)
       .map((it) => it.letter)
   );
 
   const misplacedLetters = new Set(
     submittedLetters
       .filter(
-        ({ letter }) => solution.includes(letter) && !correctLetters.has(letter)
+        ({ letter }) =>
+          solution().includes(letter) && !correctLetters.has(letter)
       )
       .map((it) => it.letter)
   );
-
-  const unusedLetterTextColor = useColorModeValue("black", "gray.50") as string;
-  const usedLetterTextColor = "gray.50";
 
   function letterButtonProps(letter: string): LetterButtonProps {
     const colorScheme = correctLetters.has(letter)
@@ -162,9 +164,8 @@ const KeyButton = memo(function KeyButton(
     ) as ColorScheme,
   };
 
-  const [baseColor, hover, pressed] = props.colorScheme
-    ? colorSchemes[String(props.colorScheme)]
-    : [];
+  const [baseColor, hover, pressed] =
+    colorSchemes[String(props.colorScheme)] ?? [];
 
   const btnText = String(props.children);
 

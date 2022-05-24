@@ -1,12 +1,13 @@
+import { observer } from "mobx-react-lite";
 import { Button, Column, Heading, Row, Text } from "native-base";
-import { WordleState } from "../hooks/useWordleState";
+import { WordleState } from "../WordleStore";
 
 export interface PostGameButtonsProps {
   wordleState: WordleState;
   onRestartPress: () => void;
 }
 
-export function PostGameButtons({
+export const PostGameButtons = observer(function PostGameButtons({
   wordleState: { status, solution },
   onRestartPress,
 }: PostGameButtonsProps) {
@@ -32,4 +33,4 @@ export function PostGameButtons({
       </Row>
     </Column>
   );
-}
+});

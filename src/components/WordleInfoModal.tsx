@@ -29,17 +29,9 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      {
-                        letter: "W",
-                        letterIsInRightSpot: true,
-                      },
-                      { letter: "E" },
-                      { letter: "A" },
-                      { letter: "R" },
-                      { letter: "Y" },
-                    ]}
-                    isSubmitted={true}
+                    rowGuess={() => "WEARY"}
+                    solution="WXXXX"
+                    isSubmitted={() => true}
                     initiallyRevealed={true}
                   />
                 </Box>
@@ -50,14 +42,9 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      { letter: "P" },
-                      { letter: "I", letterIsInRemainingLetters: true },
-                      { letter: "L" },
-                      { letter: "L" },
-                      { letter: "S" },
-                    ]}
-                    isSubmitted={true}
+                    rowGuess={() => "PILLS"}
+                    solution="XIXXX"
+                    isSubmitted={() => true}
                     initiallyRevealed={true}
                   />
                 </Box>
@@ -66,14 +53,9 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      { letter: "V" },
-                      { letter: "A" },
-                      { letter: "G" },
-                      { letter: "U" },
-                      { letter: "E" },
-                    ]}
-                    isSubmitted={true}
+                    rowGuess={() => "VAGUE"}
+                    solution="XXXXX"
+                    isSubmitted={() => true}
                     initiallyRevealed={true}
                   />
                 </Box>

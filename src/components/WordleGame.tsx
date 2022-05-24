@@ -1,4 +1,6 @@
 import { get, range } from "lodash";
+import { autorun } from "mobx";
+import { Observer, observer } from "mobx-react-lite";
 import {
   Alert,
   Box,
@@ -10,7 +12,7 @@ import {
   WarningIcon,
 } from "native-base";
 import { useEffect, useMemo } from "react";
-import { useWordleState, WordleStateParams } from "../hooks/useWordleState";
+import { WordleStore } from "../WordleStore";
 import { KeyboardButtons } from "./KeyboardButtons";
 import { LetterGrid } from "./letter-grid/LetterGrid";
 import { PostGameButtons } from "./PostGameButtons";
@@ -19,39 +21,49 @@ const ALPHABET = range(0, 26).map((i) => String.fromCharCode(i + 65));
 
 const doc = typeof document === "object" ? document : null;
 
+export interface WordleGameProps {
+  solution?: string;
+}
+
 /** Holds the game state and renders the game elements. */
-export function WordleGame(params: WordleStateParams) {
+export const WordleGame = observer(function WordleGame({
+  solution,
+}: WordleGameProps) {
   const toast = useToast();
 
   const {
-    wordleState,
+    state: wordleState,
     addLetterToGuess,
     removeLastLetterFromGuess,
     submitGuess,
     continueGame,
     restart,
-  } = useWordleState(params);
+  } = useMemo(() => new WordleStore(solution), [solution]);
 
   // Show a toast if there is a guessing error:
-  useEffect(() => {
-    if (wordleState.currentGuessError) {
-      const description = wordleState.currentGuessError.message;
-      toast.show({
-        duration: 2000,
-        placement: "top",
-        description,
-        render: () => (
-          <Alert status="warning">
-            <Row space={2} alignItems="center">
-              <WarningIcon color="black" />
-              <Text color="black">{description}</Text>
-            </Row>
-          </Alert>
-        ),
-      });
-    }
+  useEffect(
+    () =>
+      autorun(() => {
+        if (wordleState.currentGuessError) {
+          const description = wordleState.currentGuessError.message;
+          toast.show({
+            duration: 2000,
+            placement: "top",
+            description,
+            render: () => (
+              <Alert status="warning">
+                <Row space={2} alignItems="center">
+                  <WarningIcon color="black" />
+                  <Text color="black">{description}</Text>
+                </Row>
+              </Alert>
+            ),
+          });
+        }
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordleState.currentGuessError]);
+    []
+  );
 
   // Key presses change the game state:
   useEffect(() => {
@@ -86,13 +98,10 @@ export function WordleGame(params: WordleStateParams) {
   }, []);
 
   // Only reveal the new colors on the keyboard UI after the letter box colors have been revealed:
-  const revealedGuesses = useMemo(
-    () =>
-      wordleState.status === "REVEALING"
-        ? wordleState.submittedGuesses.slice(0, -1)
-        : wordleState.submittedGuesses,
-    [wordleState.status, wordleState.submittedGuesses]
-  );
+  const revealedGuesses = () =>
+    wordleState.status === "REVEALING"
+      ? wordleState.submittedGuesses.slice(0, -1)
+      : wordleState.submittedGuesses;
 
   return (
     <Flex
@@ -106,20 +115,30 @@ export function WordleGame(params: WordleStateParams) {
         <LetterGrid wordleState={wordleState} onRowRevealed={continueGame} />
       </Center>
       <Box h={192}>
-        {(wordleState.status === "WON" || wordleState.status === "LOST") && (
-          <PostGameButtons onRestartPress={restart} wordleState={wordleState} />
-        )}
-        {(wordleState.status === "GUESSING" ||
-          wordleState.status === "REVEALING") && (
-          <KeyboardButtons
-            submittedGuesses={revealedGuesses}
-            solution={wordleState.solution}
-            onLetterPress={addLetterToGuess}
-            onBackspacePress={removeLastLetterFromGuess}
-            onEnterPress={submitGuess}
-          />
-        )}
+        <Observer>
+          {() => (
+            <>
+              {(wordleState.status === "WON" ||
+                wordleState.status === "LOST") && (
+                <PostGameButtons
+                  onRestartPress={restart}
+                  wordleState={wordleState}
+                />
+              )}
+              {(wordleState.status === "GUESSING" ||
+                wordleState.status === "REVEALING") && (
+                <KeyboardButtons
+                  submittedGuesses={revealedGuesses}
+                  solution={() => wordleState.solution}
+                  onLetterPress={addLetterToGuess}
+                  onBackspacePress={removeLastLetterFromGuess}
+                  onEnterPress={submitGuess}
+                />
+              )}
+            </>
+          )}
+        </Observer>
       </Box>
     </Flex>
   );
-}
+});
