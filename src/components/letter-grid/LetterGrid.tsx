@@ -1,16 +1,18 @@
 import { range } from "lodash";
 import { VStack } from "native-base";
+import { memo } from "react";
 import { WordleState } from "../../hooks/useWordleState";
-import { LetterGridRow, LetterGridRowProps } from "./LetterGridRow";
+import { LetterGridRow } from "./LetterGridRow";
 
 export interface LetterGridProps {
   wordleState: WordleState;
   onRowRevealed?: () => void;
 }
 
-export function LetterGrid({ wordleState, onRowRevealed }: LetterGridProps) {
-  const { rows } = useLetterGridData({ wordleState });
-
+export const LetterGrid = memo(function LetterGrid({
+  wordleState,
+  onRowRevealed,
+}: LetterGridProps) {
   return (
     <VStack
       width="full"
@@ -20,56 +22,26 @@ export function LetterGrid({ wordleState, onRowRevealed }: LetterGridProps) {
       // Any component state should be lost when the solution is changed (e.g. for a new game):
       key={wordleState.solution}
     >
-      {rows.map((rowData, rowNum) => (
-        <LetterGridRow
-          {...rowData}
-          onRowRevealed={onRowRevealed}
-          key={rowNum}
-        />
-      ))}
+      {range(0, wordleState.maxGuesses).map((rowNum) => {
+        const isCurrentGuess = rowNum === wordleState.submittedGuesses.length;
+        const isSubmitted = rowNum in wordleState.submittedGuesses;
+        const rowGuess = isCurrentGuess
+          ? wordleState.currentGuess
+          : wordleState.submittedGuesses[rowNum];
+
+        const rowError = isCurrentGuess ? wordleState.currentGuessError : null;
+
+        return (
+          <LetterGridRow
+            isSubmitted={isSubmitted}
+            rowError={rowError}
+            rowGuess={rowGuess}
+            solution={wordleState.solution}
+            onRowRevealed={onRowRevealed}
+            key={rowNum}
+          />
+        );
+      })}
     </VStack>
   );
-}
-
-function useLetterGridData({ wordleState }: LetterGridProps) {
-  const {
-    maxGuesses,
-    wordLength,
-    currentGuess,
-    submittedGuesses,
-    solution,
-    currentGuessError,
-  } = wordleState;
-
-  const rows = range(0, maxGuesses).map((rowNum) => {
-    const isCurrentGuess = rowNum === submittedGuesses.length;
-    const isSubmitted = Boolean(submittedGuesses[rowNum]);
-    const rowGuess = isCurrentGuess ? currentGuess : submittedGuesses[rowNum];
-
-    const remainingLetters = range(0, solution.length)
-      .filter((idx) => rowGuess?.[idx] !== solution[idx])
-      .map((idx) => solution[idx]);
-
-    const rowError = isCurrentGuess ? currentGuessError : null;
-
-    const rowData: LetterGridRowProps = {
-      columnData: range(0, wordLength).map((colNum) => {
-        const letter = rowGuess?.charAt(colNum);
-        const letterIsInRemainingLetters = Boolean(
-          letter && remainingLetters.includes(letter)
-        );
-        const letterIsInRightSpot = Boolean(
-          letter && solution.charAt(colNum) === letter
-        );
-
-        return { letter, letterIsInRightSpot, letterIsInRemainingLetters };
-      }),
-      rowError,
-      isSubmitted,
-    };
-
-    return rowData;
-  });
-
-  return { rows };
-}
+});

@@ -29,16 +29,8 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      {
-                        letter: "W",
-                        letterIsInRightSpot: true,
-                      },
-                      { letter: "E" },
-                      { letter: "A" },
-                      { letter: "R" },
-                      { letter: "Y" },
-                    ]}
+                    rowGuess="WEARY"
+                    solution="WXXXX"
                     isSubmitted={true}
                     initiallyRevealed={true}
                   />
@@ -50,13 +42,8 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      { letter: "P" },
-                      { letter: "I", letterIsInRemainingLetters: true },
-                      { letter: "L" },
-                      { letter: "L" },
-                      { letter: "S" },
-                    ]}
+                    rowGuess="PILLS"
+                    solution="XIXXX"
                     isSubmitted={true}
                     initiallyRevealed={true}
                   />
@@ -66,13 +53,8 @@ export function WordleInfoModal({ isOpen, onClose }: WordleInfoModalProps) {
               <Box>
                 <Box w={280} mb={1}>
                   <LetterGridRow
-                    columnData={[
-                      { letter: "V" },
-                      { letter: "A" },
-                      { letter: "G" },
-                      { letter: "U" },
-                      { letter: "E" },
-                    ]}
+                    rowGuess="VAGUE"
+                    solution="XXXXX"
                     isSubmitted={true}
                     initiallyRevealed={true}
                   />

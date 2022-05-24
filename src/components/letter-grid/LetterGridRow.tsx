@@ -1,10 +1,12 @@
+import { range } from "lodash";
 import { HStack } from "native-base";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Animated } from "react-native";
-import { LetterBox, LetterBoxData } from "./LetterBox";
+import { LetterBox } from "./LetterBox";
 
 export interface LetterGridRowProps {
-  columnData: LetterBoxData[];
+  rowGuess?: string;
+  solution: string;
   rowError?: { message: string } | null;
   isSubmitted: boolean;
   onRowRevealed?: () => void;
@@ -12,32 +14,32 @@ export interface LetterGridRowProps {
   initiallyRevealed?: boolean;
 }
 
-export function LetterGridRow({
-  columnData,
+export const LetterGridRow = memo(function LetterGridRow({
+  rowGuess,
   rowError,
+  solution,
   isSubmitted,
   onRowRevealed,
   initiallyRevealed,
 }: LetterGridRowProps) {
   // Shake horizontally when there is a new error:
-  const translateXRef = useRef(new Animated.Value(0)); // Initial value for opacity: 0
-  const translateX = translateXRef.current;
+  const { translateX } = useShakeAnimation(rowError);
 
-  useEffect(() => {
-    if (rowError) {
-      const shakePath = [0, -2, 2, -4, 4, -4, 2, -2, 0];
-      const duration = 500 / shakePath.length;
-      Animated.sequence(
-        shakePath.map((x) =>
-          Animated.timing(translateXRef.current, {
-            useNativeDriver: true,
-            toValue: x,
-            duration,
-          })
-        )
-      ).start();
-    }
-  }, [rowError]);
+  const remainingLetters = range(0, solution.length)
+    .filter((idx) => rowGuess?.[idx] !== solution[idx])
+    .map((idx) => solution[idx]);
+
+  const columnData = range(0, solution.length).map((colNum) => {
+    const letter = rowGuess?.charAt(colNum);
+    const letterIsInRemainingLetters = Boolean(
+      letter && remainingLetters.includes(letter)
+    );
+    const letterIsInRightSpot = Boolean(
+      letter && solution.charAt(colNum) === letter
+    );
+
+    return { letter, letterIsInRightSpot, letterIsInRemainingLetters };
+  });
 
   return (
     <Animated.View style={{ flexGrow: 1, transform: [{ translateX }] }}>
@@ -59,4 +61,28 @@ export function LetterGridRow({
       </HStack>
     </Animated.View>
   );
+});
+
+function useShakeAnimation(rowError?: { message: string } | null) {
+  // Shake horizontally when there is a new error:
+  const translateXRef = useRef(new Animated.Value(0)); // Initial value for opacity: 0
+  const translateX = translateXRef.current;
+
+  useEffect(() => {
+    if (rowError) {
+      const shakePath = [0, -2, 2, -4, 4, -4, 2, -2, 0];
+      const duration = 500 / shakePath.length;
+      Animated.sequence(
+        shakePath.map((x) =>
+          Animated.timing(translateXRef.current, {
+            useNativeDriver: true,
+            toValue: x,
+            duration,
+          })
+        )
+      ).start();
+    }
+  }, [rowError]);
+
+  return { translateX };
 }
