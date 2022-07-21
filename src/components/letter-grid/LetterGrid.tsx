@@ -19,8 +19,8 @@ export const LetterGrid = memo(function LetterGrid({
       maxW={330}
       space={1.5}
       margin={2}
-      // Any component state should be lost when the solution is changed (e.g. for a new game):
-      key={wordleState.solution}
+      // Any component state should be lost when the playId is changed (i.e. for a new game):
+      key={wordleState.playId}
     >
       {range(0, wordleState.maxGuesses).map((rowNum) => {
         const isCurrentGuess = rowNum === wordleState.submittedGuesses.length;
